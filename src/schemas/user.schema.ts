@@ -54,7 +54,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 export interface IUserJson {
   _id: string;
   displayName: string;
-  profileImage?: string;
+  profileImageURL?: string;
   isAdmin: boolean;
 }
 
