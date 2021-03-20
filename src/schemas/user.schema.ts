@@ -34,48 +34,36 @@ class OAuth {
   github: Social;
 }
 
-@Schema({
-  timestamps: true,
-})
+@Schema({ timestamps: true })
 export class User {
-  @Prop({ sparse: true, unique: true, index: true })
-  email?: string;
-
   @Prop({ required: true })
   displayName: string;
 
   @Prop()
-  profileImage?: string;
-
-  @Prop({ default: false })
-  emailVerified: boolean;
+  profileImageURL?: string;
 
   @Prop({ default: false })
   isAdmin: boolean;
 
   @Prop()
-  oAuth: OAuth;
+  oAuth?: OAuth;
 }
 
 export type TUserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
 export interface IUserJson {
   _id: string;
-  email?: string;
   displayName: string;
   profileImage?: string;
   isAdmin: boolean;
-  emailVerified: boolean;
 }
 
 UserSchema.set('toJSON', {
-  transform({ _id, email, emailVerified, displayName, profileImage, isAdmin }: TUserDocument) {
+  transform({ _id, displayName, profileImageURL, isAdmin }: TUserDocument) {
     return {
       _id,
-      email,
-      emailVerified,
       displayName,
-      profileImage,
+      profileImageURL,
       isAdmin,
     };
   },

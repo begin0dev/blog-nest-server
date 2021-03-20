@@ -44,7 +44,7 @@ export class TokensMiddleware implements NestMiddleware {
         res.cookie('accessToken', accessToken);
 
         // extended your refresh token so they do not expire while using your site
-        if (dayjs(expiredAt).diff(dayjs(), 'minute') <= 5) {
+        if (dayjs(expiredAt).diff(dayjs(), 'minute') <= 10) {
           await user.updateOne({ $set: { 'oAuth.local.expiredAt': dayjs().add(1, 'hour') } });
         }
       } catch (err) {

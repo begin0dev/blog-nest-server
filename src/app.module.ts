@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TokensMiddleware } from '@app/middlewares/tokens/tokens.middleware';
 import { TokensModule } from '@app/middlewares/tokens/tokens.module';
 import { UsersController } from '@app/users/users.controller';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersController } from '@app/users/users.controller';
       useCreateIndex: true,
     }),
     TokensModule,
+    UsersModule,
   ],
   controllers: [UsersController],
 })
