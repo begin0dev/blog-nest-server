@@ -52,6 +52,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "faker": "^5.4.0",
     "jest": "^26.6.3",
+    "mongodb-memory-server": "^6.9.6",
     "prettier": "^2.1.2",
     "supertest": "^6.0.0",
     "ts-jest": "^26.5.3",
@@ -66,7 +67,9 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "moduleNameMapper": {
+      "@app/(.*)": "<rootDir>/src/$1"
+    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

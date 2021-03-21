@@ -4,8 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TokensMiddleware } from '@app/middlewares/tokens/tokens.middleware';
 import { TokensModule } from '@app/middlewares/tokens/tokens.module';
-import { UsersController } from '@app/users/users.controller';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from '@app/users/users.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { UsersModule } from './users/users.module';
     TokensModule,
     UsersModule,
   ],
-  controllers: [UsersController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

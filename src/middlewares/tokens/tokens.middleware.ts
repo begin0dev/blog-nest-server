@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { Request, Response, NextFunction } from 'express';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 

@@ -22,16 +22,16 @@ class OAuth {
   local: Local;
 
   @Prop()
-  facebook: Social;
+  facebook?: Social;
 
   @Prop()
-  kakao: Social;
+  kakao?: Social;
 
   @Prop()
-  google: Social;
+  google?: Social;
 
   @Prop()
-  github: Social;
+  github?: Social;
 }
 
 @Schema({ timestamps: true })
@@ -46,7 +46,7 @@ export class User {
   isAdmin: boolean;
 
   @Prop()
-  oAuth?: OAuth;
+  oAuth: OAuth;
 }
 
 export type TUserDocument = User & Document;
