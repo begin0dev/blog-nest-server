@@ -53,6 +53,7 @@
     "faker": "^5.4.0",
     "jest": "^26.6.3",
     "mongodb-memory-server": "^6.9.6",
+    "node-mocks-http": "^1.10.1",
     "prettier": "^2.1.2",
     "supertest": "^6.0.0",
     "ts-jest": "^26.5.3",
@@ -78,6 +79,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ]
   }
 }

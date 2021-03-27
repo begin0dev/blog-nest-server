@@ -51,12 +51,6 @@ export class User {
 
 export type TUserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
-export interface IUserJson {
-  _id: string;
-  displayName: string;
-  profileImageURL?: string;
-  isAdmin: boolean;
-}
 
 UserSchema.set('toJSON', {
   transform({ _id, displayName, profileImageURL, isAdmin }: TUserDocument) {

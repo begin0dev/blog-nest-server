@@ -7,7 +7,7 @@ import { User, UserSchema } from '@app/schemas/user.schema';
 import { mockUser } from '@app/schemas/__mocks__/user';
 
 describe('UsersService', () => {
-  let service: UsersService;
+  let usersService: UsersService;
   let mongoServer: MongoMemoryServer;
 
   beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('UsersService', () => {
       providers: [UsersService],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    usersService = module.get<UsersService>(UsersService);
   });
 
   afterEach(async () => {
@@ -30,18 +30,18 @@ describe('UsersService', () => {
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(usersService).toBeDefined();
   });
 
   it('#findByRefreshToken', async () => {
     const userDto = mockUser();
 
-    let user = await service.findByRefreshToken(userDto.oAuth.local.refreshToken);
+    let user = await usersService.findByRefreshToken(userDto.oAuth.local.refreshToken);
     expect(user).toBeNull();
 
-    await service.create(userDto);
+    await usersService.create(userDto);
 
-    user = await service.findByRefreshToken(userDto.oAuth.local.refreshToken);
+    user = await usersService.findByRefreshToken(userDto.oAuth.local.refreshToken);
     expect(user).not.toBeNull();
   });
 });

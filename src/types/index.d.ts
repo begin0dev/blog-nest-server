@@ -1,9 +1,9 @@
-import { IUserJson } from '@app/schemas/user.schema';
+import { IUser } from '@app/decorators/user.decorator';
 
 declare global {
   namespace Express {
     export interface Request {
-      user?: IUserJson;
+      user?: IUser;
     }
   }
 }

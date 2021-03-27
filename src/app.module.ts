@@ -1,8 +1,7 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { TokensMiddleware } from '@app/middlewares/tokens/tokens.middleware';
 import { TokensModule } from '@app/middlewares/tokens/tokens.module';
 import { UsersModule } from '@app/users/users.module';
 
@@ -19,8 +18,4 @@ import { UsersModule } from '@app/users/users.module';
     UsersModule,
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(TokensMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

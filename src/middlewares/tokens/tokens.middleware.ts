@@ -4,7 +4,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 
 import { TokensService } from '@app/middlewares/tokens/tokens.service';
 import { UsersService } from '@app/users/users.service';
-import { IUserJson } from '@app/schemas/user.schema';
+import { IUser } from '@app/decorators/user.decorator';
 
 @Injectable()
 export class TokensMiddleware implements NestMiddleware {
@@ -39,7 +39,7 @@ export class TokensMiddleware implements NestMiddleware {
           return next();
         }
 
-        req.user = user.toJSON() as IUserJson;
+        req.user = user.toJSON() as IUser;
         accessToken = this.tokenService.generateAccessToken({ user: req.user });
         res.cookie('accessToken', accessToken);
 

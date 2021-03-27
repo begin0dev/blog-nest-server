@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
-import { IUserJson } from '@app/schemas/user.schema';
+import { IUser } from '@app/decorators/user.decorator';
 
 const refreshTokenSize = 24;
 
 export interface IJwtPayload {
-  user: IUserJson;
+  user: IUser;
 }
 
 @Injectable()
