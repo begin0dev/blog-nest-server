@@ -32,7 +32,7 @@ export class TokensMiddleware implements NestMiddleware {
           return next();
         }
 
-        const { expiredAt } = user?.oAuth?.local || {};
+        const { expiredAt } = user.oAuth?.local || {};
         if (dayjs() > dayjs(expiredAt)) {
           await user.updateOne({ $unset: { 'oAuth.local': 1 } });
           res.clearCookie('refreshToken');
@@ -44,8 +44,9 @@ export class TokensMiddleware implements NestMiddleware {
         res.cookie('accessToken', accessToken);
 
         // extended your refresh token so they do not expire while using your site
-        if (dayjs(expiredAt).diff(dayjs(), 'minute') <= 10) {
-          await user.updateOne({ $set: { 'oAuth.local.expiredAt': dayjs().add(1, 'hour') } });
+        const diffMinute = dayjs(expiredAt).diff(dayjs(), 'minute');
+        if (diffMinute <= 30) {
+          await user.updateOne({ $set: { 'oAuth.local.expiredAt': dayjs().add(60 + diffMinute, 'minute') } });
         }
       } catch (err) {
         res.clearCookie('refreshToken');

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 import { IUser } from '@app/decorators/user.decorator';
 

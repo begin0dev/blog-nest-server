@@ -19,7 +19,7 @@ class Social {
 @Schema()
 class OAuth {
   @Prop()
-  local: Local;
+  local?: Local;
 
   @Prop()
   facebook?: Social;
@@ -55,7 +55,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.set('toJSON', {
   transform({ _id, displayName, profileImageURL, isAdmin }: TUserDocument) {
     return {
-      _id,
+      _id: _id.toString(),
       displayName,
       profileImageURL,
       isAdmin,

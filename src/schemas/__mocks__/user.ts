@@ -10,7 +10,7 @@ export const mockUser = (): CreateUserDto => ({
   oAuth: {
     local: {
       refreshToken: faker.random.uuid(),
-      expiredAt: dayjs().add(1, 'day').toDate(),
+      expiredAt: dayjs().add(1, 'day'),
     },
   },
 });
