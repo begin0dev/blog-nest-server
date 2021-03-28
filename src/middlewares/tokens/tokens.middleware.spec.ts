@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as dayjs from 'dayjs';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 import { ConfigModule } from '@nestjs/config';
@@ -13,7 +14,6 @@ import { IUser, CurrentUser } from '@app/decorators/user.decorator';
 import { User } from '@app/schemas/user.schema';
 import { mockUser } from '@app/schemas/__mocks__/user';
 import { TUserDocument } from '@app/schemas/user.schema';
-import * as dayjs from 'dayjs';
 
 describe('Token middleware test', () => {
   let app: INestApplication;
