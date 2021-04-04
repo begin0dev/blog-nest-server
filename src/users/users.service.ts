@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { TUserDocument, User } from '@app/schemas/user.schema';
-import { TSocialProvider, CreateUserDto } from '@app/users/dto/create_user.dto';
+import { CreateUserDto } from '@app/users/dto/create-user.dto';
 
 @Injectable()
 export class UsersService {

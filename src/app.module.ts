@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { TokensModule } from '@app/middlewares/tokens/tokens.module';
 import { UsersModule } from '@app/users/users.module';
+import { SocialsModule } from './socials/socials.module';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -16,6 +18,7 @@ import { UsersModule } from '@app/users/users.module';
     }),
     TokensModule,
     UsersModule,
+    SocialsModule,
   ],
 })
 export class AppModule {}

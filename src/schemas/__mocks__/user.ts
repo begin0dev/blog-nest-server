@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 import * as dayjs from 'dayjs';
 
-import { CreateUserDto } from '@app/users/dto/create_user.dto';
+import { CreateUserDto } from '@app/users/dto/create-user.dto';
 
 export const mockUser = (): CreateUserDto => ({
   displayName: faker.internet.userName(),
