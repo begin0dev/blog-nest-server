@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Dayjs } from 'dayjs';
 
 @Schema()
 class Local {
@@ -7,7 +8,7 @@ class Local {
   refreshToken: string;
 
   @Prop({ type: Date })
-  expiredAt: string;
+  expiredAt: Date | Dayjs;
 }
 
 @Schema()
@@ -40,7 +41,7 @@ export class User {
   displayName: string;
 
   @Prop()
-  profileImageURL?: string;
+  profileImageUrl?: string;
 
   @Prop({ default: false })
   isAdmin: boolean;
@@ -53,11 +54,11 @@ export type TUserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.set('toJSON', {
-  transform({ _id, displayName, profileImageURL, isAdmin }: TUserDocument) {
+  transform({ _id, displayName, profileImageUrl, isAdmin }: TUserDocument) {
     return {
       _id: _id.toString(),
       displayName,
-      profileImageURL,
+      profileImageUrl,
       isAdmin,
     };
   },

@@ -8,14 +8,14 @@ import { IUser } from '@app/decorators/user.decorator';
 
 @Injectable()
 export class TokensMiddleware implements NestMiddleware {
-  constructor(private readonly tokenService: TokensService, private readonly usersService: UsersService) {}
+  constructor(private readonly tokensService: TokensService, private readonly usersService: UsersService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     let accessToken = req.get('authorization') || req.cookies.accessToken;
     if (accessToken) {
       if (accessToken.startsWith('Bearer ')) accessToken = accessToken.slice(7, accessToken.length);
       try {
-        const { user } = this.tokenService.decodeAccessToken(accessToken);
+        const { user } = this.tokensService.decodeAccessToken(accessToken);
         req.user = user;
         return next();
       } catch (err) {
@@ -40,7 +40,7 @@ export class TokensMiddleware implements NestMiddleware {
         }
 
         req.user = user.toJSON() as IUser;
-        accessToken = this.tokenService.generateAccessToken({ user: req.user });
+        accessToken = this.tokensService.generateAccessToken({ user: req.user });
         res.cookie('accessToken', accessToken);
 
         // extended your refresh token so they do not expire while using your site

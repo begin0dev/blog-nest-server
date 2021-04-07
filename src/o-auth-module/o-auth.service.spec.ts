@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { OAuthService } from '@app/o-auth-module/o-auth.service';
-import { oAuthNames } from '@app/o-auth-module/o-auth.types';
+import { oAuthProviders } from '@app/o-auth-module/o-auth.types';
 
 describe('OAuthService', () => {
   let service: OAuthService;
@@ -13,7 +13,7 @@ describe('OAuthService', () => {
           provide: 'OAUTH_OPTIONS',
           useValue: [
             {
-              name: oAuthNames.FACEBOOK,
+              provider: oAuthProviders.FACEBOOK,
               clientId: '1234',
             },
           ],
@@ -31,12 +31,12 @@ describe('OAuthService', () => {
 
   it('#getAuthorizeUrl', () => {
     const url = service.getAuthorizeUrl({
-      name: oAuthNames.FACEBOOK,
+      provider: oAuthProviders.FACEBOOK,
       redirectUri: 'http://test.com/test',
     });
 
     const expectUrl =
-      'https://www.facebook.com/v10.0/dialog/oauth?response_type=code&client_id=1234&redirect_uri=http%3A%2F%2Ftest.com%2Ftest';
-    expect(expectUrl).toEqual(url);
+      'https://www.facebook.com/v10.0/dialog/oauth?response_type=code&client_id=1234&redirect_uri=http%3A%2F%2Ftest.com%2Ftest&scope=public_profile';
+    expect(url).toEqual(expectUrl);
   });
 });

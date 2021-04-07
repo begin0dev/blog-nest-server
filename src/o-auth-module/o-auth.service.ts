@@ -1,73 +1,80 @@
-import { Injectable, Inject } from '@nestjs/common';
 import * as qs from 'qs';
+import axios from 'axios';
+import { Injectable, Inject } from '@nestjs/common';
 
 import {
-  oAuthNames,
+  oAuthProviders,
   IAuthorizeUrl,
   IAccessToken,
   IAccessTokenParams,
-  TOAuthName,
+  TOAuthProvider,
   IOptions,
+  IProfile,
 } from '@app/o-auth-module/o-auth.types';
-import axios from 'axios';
 
 @Injectable()
 export class OAuthService {
-  private oAuthOptions: Partial<Record<TOAuthName, IOptions>> = {};
+  private oAuthOptions: Partial<Record<TOAuthProvider, IOptions>> = {};
   private SOCIAL_BASE = {
-    [oAuthNames.FACEBOOK]: {
+    [oAuthProviders.FACEBOOK]: {
       authorizationUrl: 'https://www.facebook.com/v10.0/dialog/oauth',
       tokenUrl: 'https://graph.facebook.com/v10.0/oauth/access_token',
       profileUrl: 'https://graph.facebook.com/v10.0/me',
-      defaultScope: ['name', 'email'],
+      defaultScope: ['public_profile'],
+      defaultProfile: ['name', 'email', 'picture'],
     },
-    [oAuthNames.KAKAO]: {
+    [oAuthProviders.KAKAO]: {
       authorizationUrl: 'https://kauth.kakao.com/oauth/authorize',
       tokenUrl: 'https://kauth.kakao.com/oauth/token',
       profileUrl: 'https://kapi.kakao.com/v2/user/me',
       defaultScope: [],
+      defaultProfile: [],
     },
-    [oAuthNames.GITHUB]: {
+    [oAuthProviders.GITHUB]: {
       authorizationUrl: '',
       tokenUrl: '',
       profileUrl: '',
       defaultScope: [],
+      defaultProfile: [],
     },
-    [oAuthNames.GOOGLE]: {
+    [oAuthProviders.GOOGLE]: {
       authorizationUrl: '',
       tokenUrl: '',
       profileUrl: '',
       defaultScope: [],
+      defaultProfile: [],
     },
   };
 
   constructor(@Inject('OAUTH_OPTIONS') private options) {
-    options.forEach(({ name, ...options }) => {
-      this.oAuthOptions[name] = options;
+    options.forEach(({ provider, ...options }) => {
+      this.oAuthOptions[provider] = options;
     });
   }
 
-  getCallbackUrl(name: TOAuthName, serverUrl: string, accessToken: string) {
-    const { callbackUrl } = this.oAuthOptions[name];
+  getCallbackUrl(provider: TOAuthProvider, serverUrl: string, accessToken: string) {
+    const { callbackUrl } = this.oAuthOptions[provider];
     return `${serverUrl}${callbackUrl}?${qs.stringify({ access_token: accessToken })}`;
   }
 
-  getAuthorizeUrl({ name, redirectUri }: IAuthorizeUrl): string {
-    const { clientId, options } = this.oAuthOptions[name];
-    const { authorizationUrl } = this.SOCIAL_BASE[name];
+  getAuthorizeUrl({ provider, redirectUri }: IAuthorizeUrl): string {
+    const { clientId, scope, options } = this.oAuthOptions[provider];
+    const { authorizationUrl, defaultScope } = this.SOCIAL_BASE[provider];
     const query = {
       response_type: 'code',
       client_id: clientId,
       redirect_uri: redirectUri,
+      scope: [...new Set(defaultScope.concat(scope || []))].join(','),
       ...(options || {}),
     };
+
     const queryString = qs.stringify(query);
     return `${authorizationUrl}?${queryString}`;
   }
 
-  async getAccessToken({ name, code, redirectUri }: IAccessToken) {
-    const { clientId, clientSecret, grantType } = this.oAuthOptions[name];
-    const { tokenUrl } = this.SOCIAL_BASE[name];
+  async getAccessToken({ provider, code, redirectUri }: IAccessToken): Promise<string> {
+    const { clientId, clientSecret, grantType } = this.oAuthOptions[provider];
+    const { tokenUrl } = this.SOCIAL_BASE[provider];
     const params: IAccessTokenParams = {
       code,
       client_id: clientId,
@@ -79,9 +86,21 @@ export class OAuthService {
     const {
       data: { access_token },
     } = await axios.post(tokenUrl, qs.stringify(params), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
     });
 
     return access_token;
+  }
+
+  async getProfile<T>({ provider, accessToken }: IProfile): Promise<T> {
+    const { profileUrl, defaultProfile } = this.SOCIAL_BASE[provider];
+    const { profileFields } = this.oAuthOptions[provider];
+    const params = {
+      access_token: accessToken,
+      fields: [...new Set(defaultProfile.concat(profileFields || []))].join(','),
+    };
+
+    const { data } = await axios.get(profileUrl, { params });
+    return data;
   }
 }
