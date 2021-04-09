@@ -1,9 +1,9 @@
-import { IUser } from '@app/decorators/user.decorator';
+import { ICurrentUser } from '~app/decorators/user.decorator';
 
 declare global {
   namespace Express {
     export interface Request {
-      user?: IUser;
+      user?: ICurrentUser;
     }
   }
 }

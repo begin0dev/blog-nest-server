@@ -3,7 +3,7 @@ import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-import { AppModule } from './app.module';
+import { AppModule } from '~app/app.module';
 import * as packageJSON from '../package.json';
 
 async function bootstrap() {

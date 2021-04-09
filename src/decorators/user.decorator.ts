@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export interface IUser {
+export interface ICurrentUser {
   _id: string;
   displayName: string;
   profileImageURL?: string;

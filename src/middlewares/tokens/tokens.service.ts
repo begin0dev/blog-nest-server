@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 
-import { IUser } from '@app/decorators/user.decorator';
-
-const refreshTokenSize = 24;
+import { ICurrentUser } from '~app/decorators/user.decorator';
 
 export interface IJwtPayload {
-  user: IUser;
+  user: ICurrentUser;
 }
 
 @Injectable()
 export class TokensService {
+  private readonly REFRESH_TOKEN_SIZE = 22;
+
   generateAccessToken(payload: IJwtPayload, expiresIn?: string): string {
     return jwt.sign(payload, process.env.JWT_SECRET, { issuer: 'beginner', expiresIn: expiresIn || '1h' });
   }
@@ -21,6 +21,6 @@ export class TokensService {
   }
 
   generateRefreshToken(): string {
-    return crypto.randomBytes(refreshTokenSize).toString('hex');
+    return crypto.randomBytes(this.REFRESH_TOKEN_SIZE).toString('hex');
   }
 }

@@ -10,7 +10,7 @@ import {
   TOAuthProvider,
   IOptions,
   IProfile,
-} from '@app/o-auth-module/o-auth.types';
+} from '~app/helpers/o-auth-module/o-auth.types';
 
 @Injectable()
 export class OAuthService {

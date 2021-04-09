@@ -1,21 +1,30 @@
+import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { Controller, Get, Redirect, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Redirect, Res, UseGuards } from '@nestjs/common';
 
-import { OAuthService } from '@app/o-auth-module/o-auth.service';
-import { OAuthGuard } from '@app/o-auth-module/o-auth.guard';
-import { oAuthProviders } from '@app/o-auth-module/o-auth.types';
-import { UsersService } from '@app/users/users.service';
-import { AccessToken, ErrorMessage, RedirectUrl } from '@app/o-auth-module/o-auth.decorator';
-import { IFacebookAccount, IKakaoAccount } from '@app/socials/socials.types';
+import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
+import { OAuthGuard } from '~app/helpers/o-auth-module/o-auth.guard';
+import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
+import { UsersService } from '~app/users/users.service';
+import { AccessToken, ErrorMessage, RedirectUrl } from '~app/helpers/o-auth-module/o-auth.decorator';
+import { IFacebookAccount, IKakaoAccount } from '~app/socials/socials.types';
+import { AuthGuard, authTarget } from '~app/guards/auth.guard';
+import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { ICurrentUser } from '~app/decorators/user.decorator';
 
+@ApiTags('v1/socials')
 @Controller('v1/socials')
+@UseGuards(AuthGuard([authTarget.VISITOR]))
 export class SocialsController {
   private readonly clientUri: string;
+  private readonly cookieOption = { httpOnly: true };
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly oAuthService: OAuthService,
     private readonly usersService: UsersService,
-    private readonly configService: ConfigService,
+    private readonly tokensService: TokensService,
   ) {
     this.clientUri = this.configService.get<string>('CLIENT_URI');
   }
@@ -30,7 +39,7 @@ export class SocialsController {
 
   @Get(`${oAuthProviders.FACEBOOK}/callback`)
   @Redirect()
-  async facebookCallback(@AccessToken() accessToken: string) {
+  async facebookCallback(@AccessToken() accessToken: string, @Res({ passthrough: true }) res: Response) {
     try {
       const { id, name, picture } = await this.oAuthService.getProfile<IFacebookAccount>({
         provider: oAuthProviders.FACEBOOK,
@@ -44,6 +53,12 @@ export class SocialsController {
           oAuth: { [oAuthProviders.FACEBOOK]: { id } },
         });
       }
+      res.cookie(
+        'accessToken',
+        this.tokensService.generateAccessToken({ user: user.toJSON() as ICurrentUser }),
+        this.cookieOption,
+      );
+      res.cookie('refreshToken', user.oAuth.local.refreshToken, this.cookieOption);
       return { url: this.clientUri };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };
@@ -60,7 +75,7 @@ export class SocialsController {
 
   @Get(`${oAuthProviders.KAKAO}/callback`)
   @Redirect()
-  async kakaoCallback(@AccessToken() accessToken: string) {
+  async kakaoCallback(@AccessToken() accessToken: string, @Res({ passthrough: true }) res: Response) {
     try {
       const {
         id,
@@ -74,6 +89,12 @@ export class SocialsController {
           oAuth: { [oAuthProviders.KAKAO]: { id: id.toString() } },
         });
       }
+      res.cookie(
+        'accessToken',
+        this.tokensService.generateAccessToken({ user: user.toJSON() as ICurrentUser }),
+        this.cookieOption,
+      );
+      res.cookie('refreshToken', user.oAuth.local.refreshToken, this.cookieOption);
       return { url: this.clientUri };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };

@@ -71,7 +71,7 @@
       "ts"
     ],
     "moduleNameMapper": {
-      "@app/(.*)": "<rootDir>/src/$1"
+      "~app/(.*)": "<rootDir>/src/$1"
     },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

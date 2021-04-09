@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as dayjs from 'dayjs';
 
-import { TUserDocument, User } from '@app/schemas/user.schema';
-import { CreateUserDto } from '@app/users/dto/create-user.dto';
-import { TokensService } from '@app/middlewares/tokens/tokens.service';
-import { TOAuthProvider } from '@app/o-auth-module/o-auth.types';
+import { TUserDocument, User } from '~app/schemas/user.schema';
+import { CreateUserDto } from '~app/users/dto/create-user.dto';
+import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<TUserDocument>,
   ) {}
 
-  async create(userDto: CreateUserDto): Promise<TUserDocument> {
+  create(userDto: CreateUserDto) {
     const user = new this.userModel(userDto);
     user.isAdmin = false;
     user.oAuth.local = {
@@ -25,11 +25,19 @@ export class UsersService {
     return user.save();
   }
 
-  async findBySocialId(provider: TOAuthProvider, id: string): Promise<TUserDocument | null> {
+  findById(_id: string) {
+    return this.userModel.findOne({ _id });
+  }
+
+  findBySocialId(provider: TOAuthProvider, id: string) {
     return this.userModel.findOne({ [`oAuth.${provider}.id`]: id });
   }
 
-  async findByRefreshToken(refreshToken: string): Promise<TUserDocument | null> {
+  findByRefreshToken(refreshToken: string) {
     return this.userModel.findOne({ 'oAuth.local.refreshToken': refreshToken });
+  }
+
+  deleteRefreshToken(_id) {
+    return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': 1 } });
   }
 }

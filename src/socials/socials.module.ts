@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
-import { SocialsController } from '@app/socials/socials.controller';
-import { OAuthModule } from '@app/o-auth-module/o-auth.module';
-import { oAuthProviders, TOAuthProvider } from '@app/o-auth-module/o-auth.types';
-import { UsersService } from '@app/users/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '@app/schemas/user.schema';
-import { TokensService } from '@app/middlewares/tokens/tokens.service';
+
+import { SocialsController } from '~app/socials/socials.controller';
+import { OAuthModule } from '~app/helpers/o-auth-module/o-auth.module';
+import { oAuthProviders, TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
+import { UsersService } from '~app/users/users.service';
+import { User, UserSchema } from '~app/schemas/user.schema';
+import { TokensService } from '~app/middlewares/tokens/tokens.service';
 
 const callbackUrl = (provider: TOAuthProvider) => `/api/v1/socials/${provider}/callback`;
 

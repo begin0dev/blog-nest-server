@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { SocialsController } from './socials.controller';
+import { SocialsController } from '~app/socials/socials.controller';
 
 describe('OAuthsController', () => {
   let controller: SocialsController;

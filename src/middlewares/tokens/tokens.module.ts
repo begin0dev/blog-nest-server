@@ -1,10 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { TokensService } from '@app/middlewares/tokens/tokens.service';
-import { UsersService } from '@app/users/users.service';
-import { User, UserSchema } from '@app/schemas/user.schema';
-import { TokensMiddleware } from '@app/middlewares/tokens/tokens.middleware';
+import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { UsersService } from '~app/users/users.service';
+import { User, UserSchema } from '~app/schemas/user.schema';
+import { TokensMiddleware } from '~app/middlewares/tokens/tokens.middleware';
 
 @Module({
   providers: [TokensService, UsersService],
