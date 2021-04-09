@@ -26,7 +26,7 @@ export class UsersController {
     @CurrentUser() currentUser: ICurrentUser,
     @Res({ passthrough: true }) res: Response,
   ): Promise<undefined> {
-    const user = await this.usersService.findById(currentUser._id);
+    await this.usersService.deleteRefreshToken(currentUser._id);
     res.clearCookie('accessToken', this.cookieOption);
     res.clearCookie('refreshToken', this.cookieOption);
     return undefined;
