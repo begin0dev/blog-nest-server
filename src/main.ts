@@ -1,3 +1,4 @@
+import 'newrelic';
 import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as cookieParser from 'cookie-parser';

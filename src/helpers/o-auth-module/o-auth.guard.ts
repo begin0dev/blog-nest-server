@@ -28,7 +28,6 @@ export function OAuthGuard(provider: TOAuthProvider) {
           });
           res.locals.redirectUrl = this.oAuthService.getCallbackUrl(provider, serverUrl, accessToken);
         } catch (err) {
-          console.error(err.message);
           res.locals.error = err.message;
         }
       }
