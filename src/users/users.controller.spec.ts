@@ -8,10 +8,9 @@ import { mockUser } from '~app/schemas/__mocks__/user';
 
 describe('UsersController', () => {
   let usersController: UsersController;
-  let usersService;
+  const usersService = { deleteRefreshToken: jest.fn(async () => undefined) };
 
   beforeEach(async () => {
-    usersService = { deleteRefreshToken: jest.fn(async () => undefined) };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService],
