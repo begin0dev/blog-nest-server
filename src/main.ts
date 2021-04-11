@@ -23,6 +23,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, builder);
   SwaggerModule.setup('api-docs', app, document);
 
+  // SET global
   app.setGlobalPrefix('/api');
 
   // SET middleware

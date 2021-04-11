@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path');
+
 /**
  * New Relic agent configuration.
  *
@@ -36,6 +39,7 @@ exports.config = {
      * production applications.
      */
     level: 'info',
+    filepath: path.join(process.cwd(), 'logs', 'newrelic_agent.log'),
   },
   /**
    * When true, all request headers except for those listed in attributes.exclude
