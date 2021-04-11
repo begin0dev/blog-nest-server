@@ -22,13 +22,9 @@ export class UsersController {
   @Delete()
   @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard([authTarget.USER]))
-  async delete(
-    @CurrentUser() currentUser: ICurrentUser,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<undefined> {
-    await this.usersService.deleteRefreshToken(currentUser._id);
+  delete(@CurrentUser() currentUser: ICurrentUser, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('accessToken', this.cookieOption);
     res.clearCookie('refreshToken', this.cookieOption);
-    return undefined;
+    return this.usersService.deleteRefreshToken(currentUser._id);
   }
 }
