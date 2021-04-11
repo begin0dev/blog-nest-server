@@ -8,15 +8,15 @@ export const authTarget = {
 
 export type TAuthTarget = typeof authTarget[keyof typeof authTarget];
 
-export function AuthGuard(targets: TAuthTarget[]) {
+export function AuthGuard(target: TAuthTarget) {
   @Injectable()
   class MixinAuthGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean {
       const req = context.switchToHttp().getRequest();
       const { user } = req;
-      if (targets.includes(authTarget.VISITOR) && user) return false;
-      if (targets.includes(authTarget.USER) && !user) return false;
-      if (targets.includes(authTarget.ADMIN) && !user?.isAdmin) return false;
+      if (target === authTarget.VISITOR && user) return false;
+      if (target === authTarget.USER && !user) return false;
+      if (target === authTarget.ADMIN && !user?.isAdmin) return false;
       return true;
     }
   }

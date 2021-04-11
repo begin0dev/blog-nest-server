@@ -15,7 +15,7 @@ import { ICurrentUser } from '~app/decorators/user.decorator';
 
 @ApiTags('v1/socials')
 @Controller('v1/socials')
-@UseGuards(AuthGuard([authTarget.VISITOR]))
+@UseGuards(AuthGuard(authTarget.VISITOR))
 export class SocialsController {
   private readonly clientUri: string;
   private readonly cookieOption = { httpOnly: true };

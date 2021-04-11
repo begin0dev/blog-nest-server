@@ -21,7 +21,7 @@ export class UsersController {
 
   @Delete()
   @ApiOperation({ summary: '로그아웃' })
-  @UseGuards(AuthGuard([authTarget.USER]))
+  @UseGuards(AuthGuard(authTarget.USER))
   delete(@CurrentUser() currentUser: ICurrentUser, @Res({ passthrough: true }) res: Response) {
     res.clearCookie('accessToken', this.cookieOption);
     res.clearCookie('refreshToken', this.cookieOption);
