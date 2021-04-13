@@ -94,9 +94,9 @@ describe('Token middleware test', () => {
   });
 
   it('Refresh token is verified expired diff less then 30 minute and Access token is expired', async () => {
-    const mockData = mockUser();
-    mockData.oAuth.local.expiredAt = dayjs().add(20, 'minute');
-    let user = await userModel.create(mockData);
+    const userAttr = mockUser();
+    userAttr.oAuth.local.expiredAt = dayjs().add(20, 'minute');
+    let user = await userModel.create(userAttr);
     const userJSON = user.toJSON() as ICurrentUser;
     const accessToken = jwt.sign(
       { user: userJSON, exp: dayjs().subtract(1, 'hour').unix() },
@@ -117,9 +117,9 @@ describe('Token middleware test', () => {
   });
 
   it('Refresh token is expired and Access token is expired', async () => {
-    const mockData = mockUser();
-    mockData.oAuth.local.expiredAt = dayjs().subtract(1, 'hour');
-    const user = await userModel.create(mockData);
+    const userAttr = mockUser();
+    userAttr.oAuth.local.expiredAt = dayjs().subtract(1, 'hour');
+    const user = await userModel.create(userAttr);
     const userJSON = user.toJSON() as ICurrentUser;
     const accessToken = jwt.sign(
       { user: userJSON, exp: dayjs().subtract(1, 'hour').unix() },

@@ -1,3 +1,5 @@
+import * as faker from 'faker';
+import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -7,9 +9,9 @@ import { UsersService } from '~app/users/users.service';
 import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
-import { Model } from 'mongoose';
 
 describe('UsersService', () => {
+  let module: TestingModule;
   let usersService: UsersService;
   let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
@@ -18,7 +20,7 @@ describe('UsersService', () => {
     mongoServer = new MongoMemoryServer();
     const mongoURI = await mongoServer.getUri();
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         MongooseModule.forRoot(mongoURI),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
@@ -31,6 +33,7 @@ describe('UsersService', () => {
   });
 
   afterEach(async () => {
+    await module.close();
     await mongoServer.stop();
   });
 
@@ -39,32 +42,51 @@ describe('UsersService', () => {
   });
 
   it('#findByRefreshToken', async () => {
-    const mockData = mockUser();
+    const userAttr = mockUser();
 
-    let findUser = await usersService.findByRefreshToken(mockData.oAuth.local.refreshToken);
+    let findUser = await usersService.findByRefreshToken(userAttr.oAuth.local.refreshToken);
     expect(findUser).toBeNull();
 
-    await userModel.create(mockData);
+    await userModel.create(userAttr);
 
-    findUser = await usersService.findByRefreshToken(mockData.oAuth.local.refreshToken);
+    findUser = await usersService.findByRefreshToken(userAttr.oAuth.local.refreshToken);
     expect(findUser).not.toBeNull();
   });
 
   it('#findBySocialId', async () => {
-    const mockData = mockUser();
+    const userAttr = mockUser();
 
     let findUser = await usersService.findBySocialId(
       oAuthProviders.FACEBOOK,
-      mockData.oAuth[oAuthProviders.FACEBOOK].id,
+      userAttr.oAuth[oAuthProviders.FACEBOOK].id,
     );
     expect(findUser).toBeNull();
 
-    await userModel.create(mockData);
+    await userModel.create(userAttr);
 
     findUser = await usersService.findBySocialId(
       oAuthProviders.FACEBOOK,
-      mockData.oAuth[oAuthProviders.FACEBOOK].id,
+      userAttr.oAuth[oAuthProviders.FACEBOOK].id,
     );
     expect(findUser).not.toBeNull();
+  });
+
+  it('#updateRefreshToken', async () => {
+    const refreshToken = faker.datatype.uuid();
+    let user = await userModel.create(mockUser());
+    expect(user.oAuth.local.refreshToken).not.toEqual(refreshToken);
+
+    await usersService.updateRefreshToken(user._id, { ...user.oAuth.local, refreshToken });
+    user = await usersService.findById(user._id);
+    expect(user.oAuth.local.refreshToken).toEqual(refreshToken);
+  });
+
+  it('#deleteRefreshToken', async () => {
+    let user = await userModel.create(mockUser());
+    expect(user.oAuth.local).not.toBeUndefined();
+
+    await usersService.deleteRefreshToken(user._id);
+    user = await usersService.findById(user._id);
+    expect(user.oAuth.local).toBeUndefined();
   });
 });

@@ -12,27 +12,31 @@ import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
 describe('SocialsController', () => {
+  let module: TestingModule;
   let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
   let socialsController: SocialsController;
+
+  const clientUri = faker.internet.url();
   const configService = {
     get(name: string) {
-      if (name === 'CLIENT_URI') return faker.internet.url();
+      if (name === 'CLIENT_URI') return clientUri;
     },
   };
+  const profile = {
+    id: faker.datatype.uuid(),
+    name: faker.name.middleName(),
+    picture: { data: { url: faker.internet.url() } },
+  };
   const oAuthService = {
-    getProfile: async () => ({
-      id: faker.datatype.uuid(),
-      name: faker.name.middleName(),
-      picture: { data: { url: faker.internet.url() } },
-    }),
+    getProfile: async () => profile,
   };
 
   beforeEach(async () => {
     mongoServer = new MongoMemoryServer();
     const mongoURI = await mongoServer.getUri();
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         MongooseModule.forRoot(mongoURI),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
@@ -51,10 +55,20 @@ describe('SocialsController', () => {
   });
 
   afterEach(async () => {
+    await module.close();
     await mongoServer.stop();
   });
 
   it('should be defined', () => {
     expect(socialsController).toBeDefined();
+  });
+
+  it('#facebook', () => {
+    expect(socialsController.facebook(undefined, 'error test').url).toEqual(
+      `${clientUri}?status=error&message=error test`,
+    );
+
+    const redirectUrl = 'test.com/callback';
+    expect(socialsController.facebook(redirectUrl, undefined).url).toEqual(redirectUrl);
   });
 });

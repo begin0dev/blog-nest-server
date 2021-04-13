@@ -7,6 +7,7 @@ import { TUserDocument, User } from '~app/schemas/user.schema';
 import { CreateUserDto } from '~app/users/dto/create-user.dto';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
+import { Dayjs } from 'dayjs';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +38,11 @@ export class UsersService {
     return this.userModel.findOne({ 'oAuth.local.refreshToken': refreshToken });
   }
 
-  deleteRefreshToken(_id) {
+  updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
+    return this.userModel.updateOne({ _id }, { $set: { 'oAuth.local': local } });
+  }
+
+  deleteRefreshToken(_id: string) {
     return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': 1 } });
   }
 }
