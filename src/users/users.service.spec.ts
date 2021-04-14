@@ -9,12 +9,20 @@ import { UsersService } from '~app/users/users.service';
 import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
+import { ConfigService } from '@nestjs/config';
 
 describe('UsersService', () => {
   let module: TestingModule;
   let usersService: UsersService;
   let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
+
+  const JWT_SECRET = faker.datatype.uuid();
+  const configService = {
+    get(key: string) {
+      if (key === 'JWT_SECRET') return JWT_SECRET;
+    },
+  };
 
   beforeEach(async () => {
     mongoServer = new MongoMemoryServer();
@@ -25,8 +33,11 @@ describe('UsersService', () => {
         MongooseModule.forRoot(mongoURI),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
       ],
-      providers: [TokensService, UsersService],
-    }).compile();
+      providers: [ConfigService, TokensService, UsersService],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configService)
+      .compile();
 
     usersService = module.get<UsersService>(UsersService);
     userModel = module.get<Model<TUserDocument>>(getModelToken(User.name));
