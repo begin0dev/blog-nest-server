@@ -1,5 +1,6 @@
 import * as faker from 'faker';
 import { Model } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -9,7 +10,6 @@ import { UsersService } from '~app/users/users.service';
 import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
-import { ConfigService } from '@nestjs/config';
 
 describe('UsersService', () => {
   let module: TestingModule;
