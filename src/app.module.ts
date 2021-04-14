@@ -1,12 +1,12 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { TokensModule } from '~app/middlewares/tokens/tokens.module';
 import { UsersModule } from '~app/users/users.module';
 import { SocialsModule } from '~app/socials/socials.module';
+import { NewrelicInterceptor } from '~app/interceptors/newrelic.interceptor';
 
-@Global()
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -19,6 +19,12 @@ import { SocialsModule } from '~app/socials/socials.module';
     TokensModule,
     UsersModule,
     SocialsModule,
+  ],
+  providers: [
+    {
+      provide: 'NEWRELIC_INTERCEPTOR',
+      useClass: NewrelicInterceptor,
+    },
   ],
 })
 export class AppModule {}
