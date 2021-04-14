@@ -48,7 +48,10 @@ export class TokensMiddleware implements NestMiddleware {
         // extended your refresh token so they do not expire while using your site
         const diffMinute = dayjs(expiredAt).diff(dayjs(), 'minute');
         if (diffMinute <= 30) {
-          await user.updateOne({ $set: { 'oAuth.local.expiredAt': dayjs().add(60 + diffMinute, 'minute') } });
+          await this.usersService.updateRefreshToken(user._id, {
+            refreshToken,
+            expiredAt: dayjs().add(60 + diffMinute, 'minute'),
+          });
         }
       } catch (err) {
         res.clearCookie('refreshToken', this.cookieOption);

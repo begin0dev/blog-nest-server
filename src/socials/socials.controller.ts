@@ -26,7 +26,7 @@ export class SocialsController {
     private readonly usersService: UsersService,
     private readonly tokensService: TokensService,
   ) {
-    this.clientUri = this.configService.get<string>('CLIENT_URI');
+    this.clientUri = configService.get<string>('CLIENT_URI');
   }
 
   @Get(oAuthProviders.FACEBOOK)

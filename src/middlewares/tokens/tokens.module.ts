@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
@@ -7,7 +8,7 @@ import { User, UserSchema } from '~app/schemas/user.schema';
 import { TokensMiddleware } from '~app/middlewares/tokens/tokens.middleware';
 
 @Module({
-  providers: [TokensService, UsersService],
+  providers: [ConfigService, TokensService, UsersService],
   exports: [TokensService, UsersService],
   imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
 })

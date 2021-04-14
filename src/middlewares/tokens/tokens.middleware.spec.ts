@@ -1,10 +1,11 @@
-import * as jwt from 'jsonwebtoken';
 import * as dayjs from 'dayjs';
+import * as faker from 'faker';
+import * as jwt from 'jsonwebtoken';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 import { Model } from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Controller, Get, INestApplication } from '@nestjs/common';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
@@ -19,6 +20,13 @@ describe('Token middleware test', () => {
   let app: INestApplication;
   let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
+
+  const JWT_SECRET = faker.datatype.uuid();
+  const configService = {
+    get(key: string) {
+      if (key === 'JWT_SECRET') return JWT_SECRET;
+    },
+  };
 
   const extractCookies = (cookies: string[]): Record<string, string> =>
     cookies.reduce((acc, cur) => {
@@ -41,13 +49,13 @@ describe('Token middleware test', () => {
     }
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({ envFilePath: '.env.test' }),
-        MongooseModule.forRoot(mongoURI),
-        TokensModule,
-      ],
+      imports: [MongooseModule.forRoot(mongoURI), TokensModule],
+      providers: [ConfigService],
       controllers: [TestsController],
-    }).compile();
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configService)
+      .compile();
 
     app = module.createNestApplication();
     app.use(cookieParser());
@@ -65,10 +73,10 @@ describe('Token middleware test', () => {
     await request(app.getHttpServer()).get('/').expect(200, {});
   });
 
-  it('Exist verified token', async () => {
+  it('Exist verified access token', async () => {
     const user = await userModel.create(mockUser());
     const userJSON = user.toJSON() as ICurrentUser;
-    const accessToken = jwt.sign({ user: userJSON }, process.env.JWT_SECRET);
+    const accessToken = jwt.sign({ user: userJSON }, JWT_SECRET);
 
     await request(app.getHttpServer())
       .get('/')
@@ -79,10 +87,7 @@ describe('Token middleware test', () => {
   it('Refresh token is verified and Access token is expired', async () => {
     const user = await userModel.create(mockUser());
     const userJSON = user.toJSON() as ICurrentUser;
-    const accessToken = jwt.sign(
-      { user: userJSON, exp: dayjs().subtract(1, 'hour').unix() },
-      process.env.JWT_SECRET,
-    );
+    const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
       .get('/')
@@ -98,10 +103,7 @@ describe('Token middleware test', () => {
     userAttr.oAuth.local.expiredAt = dayjs().add(20, 'minute');
     let user = await userModel.create(userAttr);
     const userJSON = user.toJSON() as ICurrentUser;
-    const accessToken = jwt.sign(
-      { user: userJSON, exp: dayjs().subtract(1, 'hour').unix() },
-      process.env.JWT_SECRET,
-    );
+    const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
       .get('/')
@@ -121,10 +123,7 @@ describe('Token middleware test', () => {
     userAttr.oAuth.local.expiredAt = dayjs().subtract(1, 'hour');
     const user = await userModel.create(userAttr);
     const userJSON = user.toJSON() as ICurrentUser;
-    const accessToken = jwt.sign(
-      { user: userJSON, exp: dayjs().subtract(1, 'hour').unix() },
-      process.env.JWT_SECRET,
-    );
+    const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
       .get('/')

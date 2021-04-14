@@ -19,8 +19,8 @@ describe('SocialsController', () => {
 
   const clientUri = faker.internet.url();
   const configService = {
-    get(name: string) {
-      if (name === 'CLIENT_URI') return clientUri;
+    get(key: string) {
+      if (key === 'CLIENT_URI') return clientUri;
     },
   };
   const profile = {

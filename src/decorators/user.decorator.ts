@@ -3,7 +3,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export interface ICurrentUser {
   _id: string;
   displayName: string;
-  profileImageURL?: string;
+  profileImageUrl?: string;
   isAdmin: boolean;
 }
 
