@@ -1,13 +1,13 @@
+import * as dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as dayjs from 'dayjs';
 
 import { TUserDocument, User } from '~app/schemas/user.schema';
 import { CreateUserDto } from '~app/users/dto/create-user.dto';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
-import { Dayjs } from 'dayjs';
 
 @Injectable()
 export class UsersService {
