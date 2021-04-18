@@ -1,20 +1,16 @@
 import * as faker from 'faker';
-import { Model } from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { createResponse } from 'node-mocks-http';
 
 import { SocialsController } from '~app/socials/socials.controller';
 import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
 import { UsersService } from '~app/users/users.service';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
-import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
-import { getModelToken, MongooseModule } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config';
+import { mockUser } from '~app/schemas/__mocks__/user';
 
 describe('SocialsController', () => {
   let module: TestingModule;
-  let mongoServer: MongoMemoryServer;
-  let userModel: Model<TUserDocument>;
   let socialsController: SocialsController;
 
   const clientUri = faker.internet.url();
@@ -23,40 +19,41 @@ describe('SocialsController', () => {
       if (key === 'CLIENT_URI') return clientUri;
     },
   };
+  const userAttr = mockUser();
   const profile = {
     id: faker.datatype.uuid(),
-    name: faker.name.middleName(),
-    picture: { data: { url: faker.internet.url() } },
+    name: userAttr.displayName,
+    picture: { data: { url: userAttr.profileImageUrl } },
   };
   const oAuthService = {
     getProfile: async () => profile,
   };
+  let usersService;
 
   beforeEach(async () => {
-    mongoServer = new MongoMemoryServer();
-    const mongoURI = await mongoServer.getUri();
+    usersService = {
+      findBySocialId: jest.fn(),
+      create: jest.fn(),
+    };
 
     module = await Test.createTestingModule({
-      imports: [
-        MongooseModule.forRoot(mongoURI),
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-      ],
       controllers: [SocialsController],
       providers: [ConfigService, OAuthService, UsersService, TokensService],
     })
       .overrideProvider(ConfigService)
       .useValue(configService)
+      .overrideProvider(UsersService)
+      .useValue(usersService)
       .overrideProvider(OAuthService)
       .useValue(oAuthService)
       .compile();
 
     socialsController = module.get<SocialsController>(SocialsController);
-    userModel = module.get<Model<TUserDocument>>(getModelToken(User.name));
   });
 
-  afterEach(async () => {
+  afterEach(async (done) => {
     await module.close();
-    await mongoServer.stop();
+    done();
   });
 
   it('should be defined', () => {
@@ -70,5 +67,57 @@ describe('SocialsController', () => {
 
     const redirectUrl = 'test.com/callback';
     expect(socialsController.facebook(redirectUrl, undefined).url).toEqual(redirectUrl);
+  });
+
+  it('#facebookCallback - findBySocialId', async () => {
+    const userBase = {
+      _id: faker.datatype.uuid(),
+      displayName: userAttr.displayName,
+      profileImageUrl: userAttr.profileImageUrl,
+      isAdmin: userAttr.isAdmin,
+    };
+    const mockReturnUser = {
+      ...userBase,
+      oAuth: userAttr.oAuth,
+      toJSON() {
+        return userBase;
+      },
+    };
+
+    jest.spyOn(usersService, 'findBySocialId').mockResolvedValueOnce(mockReturnUser);
+
+    const res = createResponse();
+    res.cookie = jest.fn().mockReturnThis();
+
+    await socialsController.facebookCallback('test_token', res);
+
+    expect(usersService.findBySocialId.mock.calls.length).toEqual(1);
+    expect(usersService.create.mock.calls.length).toEqual(0);
+  });
+
+  it('#facebookCallback', async () => {
+    const userBase = {
+      _id: faker.datatype.uuid(),
+      displayName: userAttr.displayName,
+      profileImageUrl: userAttr.profileImageUrl,
+      isAdmin: userAttr.isAdmin,
+    };
+    const mockReturnUser = {
+      ...userBase,
+      oAuth: userAttr.oAuth,
+      toJSON() {
+        return userBase;
+      },
+    };
+
+    jest.spyOn(usersService, 'create').mockResolvedValueOnce(mockReturnUser);
+
+    const res = createResponse();
+    res.cookie = jest.fn().mockReturnThis();
+
+    await socialsController.facebookCallback('test_token', res);
+
+    expect(usersService.findBySocialId.mock.calls.length).toEqual(1);
+    expect(usersService.create.mock.calls.length).toEqual(1);
   });
 });
