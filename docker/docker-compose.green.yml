@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  nest-app:
+    image: begin0dev/blog-server
+    ports:
+      - '3002:3001'
+    restart: 'unless-stopped'

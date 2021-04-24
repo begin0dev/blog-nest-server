@@ -64,10 +64,9 @@ describe('Token middleware test', () => {
     userModel = module.get<Model<TUserDocument>>(getModelToken(User.name));
   });
 
-  afterEach(async (done) => {
+  afterEach(async () => {
     await app.close();
     await mongoServer.stop();
-    done();
   });
 
   it('Not exist token', async () => {

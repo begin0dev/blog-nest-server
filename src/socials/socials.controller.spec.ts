@@ -51,9 +51,8 @@ describe('SocialsController', () => {
     socialsController = module.get<SocialsController>(SocialsController);
   });
 
-  afterEach(async (done) => {
+  afterEach(async () => {
     await module.close();
-    done();
   });
 
   it('should be defined', () => {

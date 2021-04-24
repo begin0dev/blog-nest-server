@@ -43,10 +43,9 @@ describe('UsersService', () => {
     userModel = module.get<Model<TUserDocument>>(getModelToken(User.name));
   });
 
-  afterEach(async (done) => {
+  afterEach(async () => {
     await module.close();
     await mongoServer.stop();
-    done();
   });
 
   it('should be defined', () => {
