@@ -9,7 +9,7 @@ COPY package-lock.json ./
 COPY newrelic.js ./
 COPY config ./config
 COPY .env ./
-COPY dist ./
+COPY ./dist ./
 RUN mkdir -p /logs
 
 RUN npm ci --only=production
