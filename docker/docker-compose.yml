@@ -7,10 +7,10 @@ services:
     ports:
       - '80:80'
       - '443:443'
-#    volumes:
-#      - ../config/nginx.conf:/etc/nginx/nginx.conf
-#      - /docker-volumns/etc/letsencrypt:/etc/letsencrypt
+    volumes:
+      - ../config/nginx.conf:/etc/nginx/nginx.conf
+      - /docker-volumns/etc/letsencrypt:/etc/letsencrypt
     environment:
-      - DOMAIN_URL=begin0dev.me
+      - DOMAIN_URL=begin0dev.ml
       - CLIENT_URL=localhost:3000
     restart: 'unless-stopped'
