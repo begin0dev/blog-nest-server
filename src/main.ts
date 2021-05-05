@@ -10,10 +10,10 @@ import * as packageJSON from '../package.json';
 
 async function bootstrap() {
   const { CLIENT_URI, COOKIE_SECRET, PORT, NODE_ENV } = process.env;
+  const port = PORT || 3001;
   const isProduction = NODE_ENV === 'production';
 
   const app = await NestFactory.create(AppModule);
-
   // SET swagger
   const builder = new DocumentBuilder()
     .setTitle('BEGIN0DEV Blog')
@@ -36,7 +36,6 @@ async function bootstrap() {
   app.use(morgan(isProduction ? 'tiny' : 'dev'));
 
   // RUN server
-  const port = PORT || 3001;
   await app.listen(port);
   console.log(`${NODE_ENV}: Server is running on port ${port}`);
 }
