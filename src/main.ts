@@ -36,8 +36,9 @@ async function bootstrap() {
   app.use(morgan(isProduction ? 'tiny' : 'dev'));
 
   // RUN server
-  await app.listen(PORT || 3001);
-  console.log(`${NODE_ENV}: Server is running on port ${PORT}`);
+  const port = PORT || 3001;
+  await app.listen(port);
+  console.log(`${NODE_ENV}: Server is running on port ${port}`);
 }
 
 bootstrap();

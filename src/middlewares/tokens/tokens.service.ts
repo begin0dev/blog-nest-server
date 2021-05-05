@@ -22,8 +22,8 @@ export class TokensService {
     return jwt.sign(payload, this.JWT_SECRET, { issuer: 'beginner', expiresIn: expiresIn || '1h' });
   }
 
-  decodeAccessToken(token: string): IJwtPayload {
-    return jwt.verify(token, this.JWT_SECRET);
+  decodeAccessToken(token: string) {
+    return jwt.verify(token, this.JWT_SECRET) as IJwtPayload;
   }
 
   generateRefreshToken(): string {
