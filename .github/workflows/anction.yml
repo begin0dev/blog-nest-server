@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: SETUP Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
@@ -29,13 +29,13 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: INSTALL Package.json
+      - name: Install Package.json
         run: npm ci
 
-      - name: RUN Test
+      - name: Run Test
         run: npm test
 
-      - name: SETUP .env
+      - name: Setup .env
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_PORT: 3001
@@ -53,7 +53,7 @@ jobs:
           envkey_KAKAO_APP_SECRET: ${{ secrets.KAKAO_APP_SECRET }}
           file_name: .env
 
-      - name: RUN Build
+      - name: Run Build
         run: npm run build
 
       - name: Configure AWS credentials
