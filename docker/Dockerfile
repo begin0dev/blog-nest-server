@@ -10,10 +10,13 @@ COPY newrelic.js ./
 COPY config ./config
 COPY .env ./
 COPY dist ./
+
 RUN mkdir -p /logs
 
 RUN npm ci --only=production
 
-EXPOSE 3001
 ENV NODE_ENV production
+ENV PORT 80
+EXPOSE 80
+
 CMD ["npm", "start"]
