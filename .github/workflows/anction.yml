@@ -84,12 +84,3 @@ jobs:
           cluster: begin0dev-blog-cluster
           service: nest-app
           wait-for-service-stability: true
-
-      - name: BUILD and PUSH Docker
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./docker/Dockerfile
-          push: true
-          tags: begin0dev/blog-server:latest
