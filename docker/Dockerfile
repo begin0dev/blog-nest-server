@@ -9,7 +9,7 @@ COPY package-lock.json ./
 COPY newrelic.js ./
 COPY config ./config
 COPY .env ./
-COPY dist ./dist
+COPY dist ./
 
 RUN mkdir -p /logs
 
@@ -19,4 +19,4 @@ ENV NODE_ENV production
 ENV PORT 80
 EXPOSE 80
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:prod"]
