@@ -6,6 +6,8 @@ import { TokensModule } from '~app/middlewares/tokens/tokens.module';
 import { UsersModule } from '~app/users/users.module';
 import { SocialsModule } from '~app/socials/socials.module';
 import { NewrelicInterceptor } from '~app/interceptors/newrelic.interceptor';
+import { CommonsController } from './commons/commons.controller';
+import { CommonsModule } from './commons/commons.module';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { NewrelicInterceptor } from '~app/interceptors/newrelic.interceptor';
     TokensModule,
     UsersModule,
     SocialsModule,
+    CommonsModule,
   ],
   providers: [
     {
@@ -26,5 +29,6 @@ import { NewrelicInterceptor } from '~app/interceptors/newrelic.interceptor';
       useClass: NewrelicInterceptor,
     },
   ],
+  controllers: [CommonsController],
 })
 export class AppModule {}
