@@ -25,7 +25,7 @@ jobs:
       - name: Setup .env
         uses: SpicyPizza/create-envfile@v1
         with:
-          envkey_PORT: 3001
+          envkey_PORT: 80
           envkey_NODE_ENV: production
           envkey_CLIENT_URI: https://localhost:3000
           envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
