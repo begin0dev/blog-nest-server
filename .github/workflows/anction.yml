@@ -21,7 +21,7 @@ jobs:
         run: npm test
 
   build_and_deploy:
-    if: github.base_ref == 'master'
+    if: github.base_ref == 'master' && github.event.pull_request.merged == true
     needs: test
     runs-on: ubuntu-latest
 
