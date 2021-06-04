@@ -1,11 +1,9 @@
 name: Node.js DEPLOY
 
-on:
-  push:
-    branches: [master]
+on: push
 
 jobs:
-  test_and_build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +19,14 @@ jobs:
 
       - name: Run Test
         run: npm test
+
+  build_and_deploy:
+    if: github.base_ref == 'master'
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Setup .env
         uses: SpicyPizza/create-envfile@v1
@@ -54,16 +60,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-#      - name: Build, tag, and push image to Amazon ECR
-#        id: build-image
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#          ECR_REPOSITORY: begin0dev-blog-repo
-#          IMAGE_TAG: ${{ github.sha }}
-#        run: |
-#          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: begin0dev-blog-repo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Download task definition
         run: |
@@ -75,8 +81,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: begin0dev-blog-container
-          image: ${{ secrets.TEST_IMAGE }}
-#          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
