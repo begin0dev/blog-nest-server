@@ -53,6 +53,9 @@ jobs:
           envkey_KAKAO_APP_SECRET: ${{ secrets.KAKAO_APP_SECRET }}
           file_name: .env
 
+      - name: Install Package.json
+        run: npm ci
+
       - name: Run Build
         run: npm run build
 
