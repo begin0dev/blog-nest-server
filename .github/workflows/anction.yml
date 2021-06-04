@@ -1,6 +1,12 @@
 name: Node.js DEPLOY
 
-on: push
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - master
 
 jobs:
   test:
