@@ -43,7 +43,6 @@ export class CloudinaryService {
         ctx.getRequest(),
         ctx.getResponse(),
         (err: multer.MulterError | Error) => {
-          console.error(err);
           if (err) reject(err);
           resolve(null);
         },
