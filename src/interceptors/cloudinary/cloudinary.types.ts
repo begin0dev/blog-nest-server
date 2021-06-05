@@ -1,7 +1,7 @@
 import * as multer from 'multer';
 import { Options } from 'multer-storage-cloudinary';
 
-export type TCloudinaryFilesInterceptor = {
+export type TCloudinaryFilesInterceptorOptions = {
   cloudinaryParams?: Options['params'];
-  multerOptions: Omit<multer.Options, 'storage'>;
+  multerOptions?: Omit<multer.Options, 'storage'>;
 };

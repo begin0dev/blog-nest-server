@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { TCloudinaryFilesInterceptor } from '~app/interceptors/cloudinary/cloudinary.types';
+import { TCloudinaryFilesInterceptorOptions } from '~app/interceptors/cloudinary/cloudinary.types';
 import { CloudinaryService } from '~app/interceptors/cloudinary/cloudinary.service';
 
 export function CloudinaryFilesInterceptor(
   fileName: string,
   maxCount: number,
-  options: TCloudinaryFilesInterceptor,
+  options: TCloudinaryFilesInterceptorOptions,
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinInterceptor implements NestInterceptor {
