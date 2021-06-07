@@ -5,7 +5,7 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 import { CLOUDINARY_CONFIG_PROVIDER } from '~app/interceptors/cloudinary/cloudinary.module';
-import { TCloudinaryFilesInterceptor } from '~app/interceptors/cloudinary/cloudinary.types';
+import { TCloudinaryFilesInterceptorOptions } from '~app/interceptors/cloudinary/cloudinary.types';
 
 @Injectable()
 export class CloudinaryService {
@@ -18,7 +18,7 @@ export class CloudinaryService {
   setMulter(
     fileName: string,
     maxCount: number,
-    { multerOptions = {}, cloudinaryParams = {} }: TCloudinaryFilesInterceptor,
+    { multerOptions = {}, cloudinaryParams = {} }: TCloudinaryFilesInterceptorOptions,
   ) {
     cloudinary.config(this.config);
 
@@ -43,7 +43,6 @@ export class CloudinaryService {
         ctx.getRequest(),
         ctx.getResponse(),
         (err: multer.MulterError | Error) => {
-          console.error(err);
           if (err) reject(err);
           resolve(null);
         },
