@@ -37,7 +37,7 @@ describe('Token middleware test', () => {
     }, {});
 
   beforeEach(async () => {
-    mongoServer = new MongoMemoryServer();
+    mongoServer = await MongoMemoryServer.create();
     const mongoURI = await mongoServer.getUri();
 
     @Controller()

@@ -12,13 +12,13 @@ import { IFacebookAccount, IKakaoAccount } from '~app/socials/socials.types';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { ICurrentUser } from '~app/decorators/user.decorator';
+import { cookieOptions } from '~app/helpers/base';
 
 @ApiTags('v1/socials')
 @Controller('v1/socials')
 @UseGuards(AuthGuard(authTarget.VISITOR))
 export class SocialsController {
   private readonly clientUri: string;
-  private readonly cookieOption = { httpOnly: true };
 
   constructor(
     private readonly configService: ConfigService,
@@ -56,9 +56,9 @@ export class SocialsController {
       res.cookie(
         'accessToken',
         this.tokensService.generateAccessToken({ user: user.toJSON() as ICurrentUser }),
-        this.cookieOption,
+        cookieOptions,
       );
-      res.cookie('refreshToken', user.oAuth.local.refreshToken, this.cookieOption);
+      res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);
       return { url: this.clientUri };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };
@@ -92,9 +92,9 @@ export class SocialsController {
       res.cookie(
         'accessToken',
         this.tokensService.generateAccessToken({ user: user.toJSON() as ICurrentUser }),
-        this.cookieOption,
+        cookieOptions,
       );
-      res.cookie('refreshToken', user.oAuth.local.refreshToken, this.cookieOption);
+      res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);
       return { url: this.clientUri };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };
