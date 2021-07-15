@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '~app/users/users.controller';
 import { UsersService } from '~app/users/users.service';
 import { mockUser } from '~app/schemas/__mocks__/user';
+import { cookieOptions } from '~app/helpers/base';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -55,7 +56,7 @@ describe('UsersController', () => {
     await usersController.delete(currentUser, res);
     expect(usersService.deleteRefreshToken).toBeCalledTimes(1);
     expect(res.clearCookie).toBeCalledTimes(2);
-    expect(res.clearCookie).toBeCalledWith('accessToken', { httpOnly: true });
-    expect(res.clearCookie).toBeCalledWith('refreshToken', { httpOnly: true });
+    expect(res.clearCookie).toBeCalledWith('accessToken', cookieOptions);
+    expect(res.clearCookie).toBeCalledWith('refreshToken', cookieOptions);
   });
 });

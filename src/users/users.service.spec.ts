@@ -25,7 +25,7 @@ describe('UsersService', () => {
   };
 
   beforeEach(async () => {
-    mongoServer = new MongoMemoryServer();
+    mongoServer = await MongoMemoryServer.create();
     const mongoURI = await mongoServer.getUri();
 
     module = await Test.createTestingModule({
