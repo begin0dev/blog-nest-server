@@ -12,7 +12,6 @@ export interface IJwtPayload {
 @Injectable()
 export class TokensService {
   private readonly JWT_SECRET: string;
-  private readonly REFRESH_TOKEN_SIZE = 22;
 
   constructor(private readonly configService: ConfigService) {
     this.JWT_SECRET = configService.get<string>('JWT_SECRET');
@@ -27,6 +26,10 @@ export class TokensService {
   }
 
   generateRefreshToken(): string {
-    return crypto.randomBytes(this.REFRESH_TOKEN_SIZE).toString('hex');
+    return crypto.randomBytes(12).toString('hex');
+  }
+
+  generateVerifyCode(): string {
+    return crypto.randomBytes(8).toString('hex');
   }
 }

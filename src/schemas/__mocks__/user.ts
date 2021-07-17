@@ -11,6 +11,8 @@ export const mockUser = () => ({
     local: {
       refreshToken: faker.datatype.uuid(),
       expiredAt: dayjs().add(1, 'day'),
+      verifyCode: faker.datatype.uuid(),
+      verifyCodeSendAt: dayjs(),
     },
     [oAuthProviders.FACEBOOK]: {
       id: faker.datatype.uuid(),

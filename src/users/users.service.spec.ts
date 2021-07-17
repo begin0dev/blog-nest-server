@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import * as faker from 'faker';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
@@ -80,6 +81,27 @@ describe('UsersService', () => {
       userAttr.oAuth[oAuthProviders.FACEBOOK].id,
     );
     expect(findUser).not.toBeNull();
+  });
+
+  it('#findByVerifyCode: not expired', async () => {
+    const user = await userModel.create(mockUser());
+
+    const { verifyCode } = user.oAuth.local;
+
+    const findUser = await usersService.findByVerifyCode(verifyCode);
+    expect(findUser).not.toBeNull();
+  });
+
+  it('#findByVerifyCode: not expired', async () => {
+    const mockUserData = mockUser();
+    mockUserData.oAuth.local.verifyCodeSendAt = dayjs().subtract(3, 'minute');
+
+    await userModel.create(mockUserData);
+
+    const { verifyCode } = mockUserData.oAuth.local;
+
+    const findUser = await usersService.findByVerifyCode(verifyCode);
+    expect(findUser).toBeNull();
   });
 
   it('#updateRefreshToken', async () => {
