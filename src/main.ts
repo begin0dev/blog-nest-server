@@ -6,6 +6,8 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from '~app/app.module';
+import { GlobalInterceptor } from '~app/interceptors/global.interceptor';
+import { GlobalExceptionFilter } from '~app/exceptions/global-exception.filter';
 import * as packageJSON from '../package.json';
 
 async function bootstrap() {
@@ -25,6 +27,8 @@ async function bootstrap() {
 
   // SET global
   app.setGlobalPrefix('/api');
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(new GlobalInterceptor());
 
   // SET middleware
   app.enableCors({

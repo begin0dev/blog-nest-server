@@ -12,7 +12,10 @@ import { TokensService } from '~app/middlewares/tokens/tokens.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;
-  const usersService = { deleteRefreshToken: jest.fn(async () => undefined), findByVerifyCode: jest.fn() };
+  const usersService = {
+    deleteRefreshToken: jest.fn(),
+    findByVerifyCode: jest.fn(),
+  };
 
   beforeEach(async () => {
     const configService = {
@@ -71,7 +74,7 @@ describe('UsersController', () => {
   });
 
   it('#me', () => {
-    expect(usersController.me(null)).toBeNull();
+    expect(usersController.me(null).payload).toBeNull();
 
     const { displayName, profileImageUrl, isAdmin } = mockUser();
     const currentUser = {
@@ -81,7 +84,7 @@ describe('UsersController', () => {
       isAdmin,
     };
 
-    expect(usersController.me(currentUser)).toEqual(currentUser);
+    expect(usersController.me(currentUser).payload).toEqual(currentUser);
   });
 
   it('#delete', async () => {
