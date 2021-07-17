@@ -32,10 +32,8 @@ export class UsersService {
       { _id },
       {
         $set: {
-          $set: {
-            'oAuth.local.verifyCode': verifyCode,
-            'oAuth.local.verifyCodeSendAt': dayjs(),
-          },
+          'oAuth.local.verifyCode': verifyCode,
+          'oAuth.local.verifyCodeSendAt': dayjs(),
         },
       },
     );
