@@ -1,7 +1,6 @@
 import * as faker from 'faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { createResponse } from 'node-mocks-http';
 
 import { SocialsController } from '~app/socials/socials.controller';
 import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
@@ -85,10 +84,7 @@ describe('SocialsController', () => {
 
     jest.spyOn(usersService, 'findBySocialId').mockResolvedValueOnce(mockReturnUser);
 
-    const res = createResponse();
-    res.cookie = jest.fn().mockReturnThis();
-
-    await socialsController.facebookCallback('test_token', res);
+    await socialsController.facebookCallback('test_token');
 
     expect(usersService.findBySocialId.mock.calls.length).toEqual(1);
     expect(usersService.create.mock.calls.length).toEqual(0);
@@ -111,10 +107,7 @@ describe('SocialsController', () => {
 
     jest.spyOn(usersService, 'create').mockResolvedValueOnce(mockReturnUser);
 
-    const res = createResponse();
-    res.cookie = jest.fn().mockReturnThis();
-
-    await socialsController.facebookCallback('test_token', res);
+    await socialsController.facebookCallback('test_token');
 
     expect(usersService.findBySocialId.mock.calls.length).toEqual(1);
     expect(usersService.create.mock.calls.length).toEqual(1);

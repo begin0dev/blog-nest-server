@@ -9,6 +9,12 @@ class Local {
 
   @Prop({ type: Date })
   expiredAt: Date | Dayjs;
+
+  @Prop({ sparse: true, unique: true, index: true })
+  verifyCode?: string;
+
+  @Prop({ type: Date })
+  verifyCodeSendAt?: Date | Dayjs;
 }
 
 @Schema()

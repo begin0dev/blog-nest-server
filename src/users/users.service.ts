@@ -26,6 +26,22 @@ export class UsersService {
     return user.save();
   }
 
+  async createVerifyCode({ _id }: TUserDocument): Promise<string> {
+    const verifyCode = this.tokensService.generateVerifyCode();
+    await this.userModel.updateOne(
+      { _id },
+      {
+        $set: {
+          $set: {
+            'oAuth.local.verifyCode': verifyCode,
+            'oAuth.local.verifyCodeSendAt': dayjs(),
+          },
+        },
+      },
+    );
+    return verifyCode;
+  }
+
   findById(_id: string) {
     return this.userModel.findOne({ _id });
   }
@@ -36,6 +52,21 @@ export class UsersService {
 
   findByRefreshToken(refreshToken: string) {
     return this.userModel.findOne({ 'oAuth.local.refreshToken': refreshToken });
+  }
+
+  async findByVerifyCode(verifyCode: string) {
+    try {
+      const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
+      if (user)
+        this.userModel.updateOne(
+          { _id: user._id },
+          { $set: { 'oAuth.local.verifyCode': undefined, 'oAuth.local.verifyCodeSendAt': undefined } },
+        );
+      if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
+      return user;
+    } catch (err) {
+      return null;
+    }
   }
 
   updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
