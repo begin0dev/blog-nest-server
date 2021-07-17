@@ -53,6 +53,20 @@ describe('UsersService', () => {
     expect(usersService).toBeDefined();
   });
 
+  it('#createVerifyCode', async () => {
+    const userAttr = mockUser();
+    delete userAttr.oAuth.local.verifyCode;
+    delete userAttr.oAuth.local.verifyCodeSendAt;
+
+    const user = await userModel.create(userAttr);
+    expect(user.oAuth.local.verifyCode).toBeUndefined();
+
+    const verifyCode = await usersService.createVerifyCode(user);
+    const expectUser = await userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
+    expect(expectUser).not.toBeNull();
+    expect(expectUser._id).toEqual(user._id);
+  });
+
   it('#findByRefreshToken', async () => {
     const userAttr = mockUser();
 
