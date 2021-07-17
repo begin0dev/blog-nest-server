@@ -24,6 +24,13 @@ import { JsendReturnType } from '~app/types/base.types';
 export class UsersController {
   constructor(private readonly usersService: UsersService, private readonly tokensService: TokensService) {}
 
+  @Get('me')
+  @Header('content-type', 'application/json')
+  @ApiOperation({ summary: '로그인 정보 가져오기' })
+  me(@CurrentUser() currentUser: ICurrentUser | null): JsendReturnType<ICurrentUser | null> {
+    return { payload: currentUser || null };
+  }
+
   @Get('verify/:code')
   @ApiOperation({ summary: '로그인 정보 인증' })
   async verify(
@@ -41,19 +48,16 @@ export class UsersController {
     return { payload: (user.toJSON() as ICurrentUser) || null };
   }
 
-  @Get('me')
-  @Header('content-type', 'application/json')
-  @ApiOperation({ summary: '로그인 정보 가져오기' })
-  me(@CurrentUser() currentUser: ICurrentUser | null): JsendReturnType<ICurrentUser | null> {
-    return { payload: currentUser || null };
-  }
-
   @Delete()
   @ApiOperation({ summary: '로그아웃' })
   @UseGuards(AuthGuard(authTarget.USER))
-  delete(@CurrentUser() currentUser: ICurrentUser, @Res({ passthrough: true }) res: Response) {
+  async delete(
+    @CurrentUser() currentUser: ICurrentUser,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<JsendReturnType<null>> {
     res.clearCookie('accessToken', cookieOptions);
     res.clearCookie('refreshToken', cookieOptions);
-    return this.usersService.deleteRefreshToken(currentUser._id);
+    await this.usersService.deleteRefreshToken(currentUser._id);
+    return { payload: null };
   }
 }
