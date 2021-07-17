@@ -98,6 +98,8 @@ describe('UsersService', () => {
   });
 
   it('#findByVerifyCode: not expired', async () => {
+    jest.spyOn(userModel, 'updateOne').mockResolvedValueOnce(null);
+
     const user = await userModel.create(mockUser());
 
     const { verifyCode } = user.oAuth.local;
@@ -106,7 +108,9 @@ describe('UsersService', () => {
     expect(findUser).not.toBeNull();
   });
 
-  it('#findByVerifyCode: not expired', async () => {
+  it('#findByVerifyCode: expired', async () => {
+    jest.spyOn(userModel, 'updateOne').mockResolvedValueOnce(null);
+
     const mockUserData = mockUser();
     mockUserData.oAuth.local.verifyCodeSendAt = dayjs().subtract(3, 'minute');
 
