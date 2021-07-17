@@ -61,7 +61,7 @@ describe('UsersService', () => {
     const user = await userModel.create(userAttr);
     expect(user.oAuth.local.verifyCode).toBeUndefined();
 
-    const verifyCode = await usersService.createVerifyCode(user);
+    const verifyCode = await usersService.createVerifyCode(user._id);
     const expectUser = await userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
     expect(expectUser).not.toBeNull();
     expect(expectUser._id).toEqual(user._id);

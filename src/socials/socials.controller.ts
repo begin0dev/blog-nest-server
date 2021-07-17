@@ -48,7 +48,7 @@ export class SocialsController {
           oAuth: { [oAuthProviders.FACEBOOK]: { id } },
         });
       }
-      const verifyCode = await this.usersService.createVerifyCode(user);
+      const verifyCode = await this.usersService.createVerifyCode(user._id);
       return { url: `${this.clientUri}?verify_code=${verifyCode}` };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };
@@ -79,7 +79,7 @@ export class SocialsController {
           oAuth: { [oAuthProviders.KAKAO]: { id: id.toString() } },
         });
       }
-      const verifyCode = await this.usersService.createVerifyCode(user);
+      const verifyCode = await this.usersService.createVerifyCode(user._id);
       return { url: `${this.clientUri}?verify_code=${verifyCode}` };
     } catch (err) {
       return { url: `${this.clientUri}?status=error&message=${err.message}` };

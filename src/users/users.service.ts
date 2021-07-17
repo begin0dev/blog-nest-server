@@ -26,7 +26,7 @@ export class UsersService {
     return user.save();
   }
 
-  async createVerifyCode({ _id }: TUserDocument): Promise<string> {
+  async createVerifyCode(_id: string): Promise<string> {
     const verifyCode = this.tokensService.generateVerifyCode();
     await this.userModel.updateOne(
       { _id },
@@ -58,7 +58,7 @@ export class UsersService {
       if (user)
         this.userModel.updateOne(
           { _id: user._id },
-          { $set: { 'oAuth.local.verifyCode': undefined, 'oAuth.local.verifyCodeSendAt': undefined } },
+          { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
         );
       if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
       return user;
@@ -72,6 +72,6 @@ export class UsersService {
   }
 
   deleteRefreshToken(_id: string) {
-    return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': 1 } });
+    return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': '' } });
   }
 }

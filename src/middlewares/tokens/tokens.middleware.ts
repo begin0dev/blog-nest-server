@@ -35,7 +35,7 @@ export class TokensMiddleware implements NestMiddleware {
 
         const { expiredAt } = user.oAuth?.local || {};
         if (dayjs() > dayjs(expiredAt)) {
-          await user.updateOne({ $unset: { 'oAuth.local': 1 } });
+          await this.usersService.deleteRefreshToken(user._id);
           res.clearCookie('refreshToken', cookieOptions);
           return next();
         }
