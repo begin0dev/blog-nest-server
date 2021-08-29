@@ -1,8 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ObjectId } from 'mongoose';
 
 export interface ICurrentUser {
-  _id: ObjectId | string;
+  _id: string;
   displayName: string;
   profileImageUrl?: string;
   isAdmin: boolean;

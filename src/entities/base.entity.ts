@@ -1,8 +1,6 @@
-import { Expose, Transform } from 'class-transformer';
-import { ObjectId } from 'mongoose';
+import { Expose } from 'class-transformer';
 
 export class BaseEntity {
   @Expose()
-  @Transform((value) => value.toString())
-  _id: ObjectId;
+  id: string;
 }
