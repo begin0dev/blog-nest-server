@@ -1,9 +1,12 @@
 import 'newrelic';
+import 'reflect-metadata';
+
 import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from '~app/app.module';
 import { GlobalInterceptor } from '~app/interceptors/global.interceptor';
@@ -16,6 +19,21 @@ async function bootstrap() {
   const isProduction = NODE_ENV === 'production';
 
   const app = await NestFactory.create(AppModule);
+  // SET global
+  app.enableCors({
+    origin: isProduction ? [CLIENT_URI, 'localhost:3000'] : '*',
+    credentials: true,
+  });
+  app.setGlobalPrefix('/api');
+  app.useGlobalPipes(
+    new ValidationPipe({
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(new GlobalInterceptor());
+
   // SET swagger
   const builder = new DocumentBuilder()
     .setTitle('BEGIN0DEV Blog')
@@ -25,16 +43,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, builder);
   SwaggerModule.setup('api-docs', app, document);
 
-  // SET global
-  app.setGlobalPrefix('/api');
-  app.useGlobalFilters(new GlobalExceptionFilter());
-  app.useGlobalInterceptors(new GlobalInterceptor());
-
   // SET middleware
-  app.enableCors({
-    origin: isProduction ? [CLIENT_URI, 'localhost:3000'] : '*',
-    credentials: true,
-  });
   app.use(helmet());
   app.use(cookieParser(COOKIE_SECRET));
   app.use(morgan(isProduction ? 'tiny' : 'dev'));

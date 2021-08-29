@@ -1,6 +1,6 @@
 import * as dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -69,11 +69,11 @@ export class UsersService {
     }
   }
 
-  updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
+  updateRefreshToken(_id: ObjectId | string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
     return this.userModel.updateOne({ _id }, { $set: { 'oAuth.local': local } });
   }
 
-  deleteRefreshToken(_id: string) {
+  deleteRefreshToken(_id: ObjectId | string) {
     return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': '' } });
   }
 }

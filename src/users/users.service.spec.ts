@@ -27,7 +27,7 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create();
-    const mongoURI = await mongoServer.getUri();
+    const mongoURI = mongoServer.getUri();
 
     module = await Test.createTestingModule({
       imports: [

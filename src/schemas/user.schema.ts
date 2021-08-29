@@ -62,7 +62,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.set('toJSON', {
   transform({ _id, displayName, profileImageUrl, isAdmin }: TUserDocument) {
     return {
-      _id: _id.toString(),
+      _id: _id.toHexString(),
       displayName,
       profileImageUrl,
       isAdmin,

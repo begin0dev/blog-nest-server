@@ -18,6 +18,8 @@ import { UsersService } from '~app/users/users.service';
 import { cookieOptions } from '~app/helpers/base';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { JsendReturnType } from '~app/types/base.types';
+import ModelSerializer from '~app/helpers/model-serializer';
+import { UserEntity } from '~app/entities/user.entity';
 
 @ApiTags('v1/users')
 @Controller('v1/users')
@@ -39,13 +41,10 @@ export class UsersController {
   ): Promise<JsendReturnType<ICurrentUser>> {
     const user = await this.usersService.findByVerifyCode(code);
     if (!user) throw new HttpException('잘못된 요청입니다.', HttpStatus.FORBIDDEN);
-    res.cookie(
-      'accessToken',
-      this.tokensService.generateAccessToken({ user: user.toJSON() as ICurrentUser }),
-      cookieOptions,
-    );
+    const userJSON: ICurrentUser = new ModelSerializer(UserEntity, user).asJSON();
+    res.cookie('accessToken', this.tokensService.generateAccessToken({ user: userJSON }), cookieOptions);
     res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);
-    return { payload: (user.toJSON() as ICurrentUser) || null };
+    return { payload: userJSON };
   }
 
   @Delete()
