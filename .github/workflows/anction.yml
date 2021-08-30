@@ -27,76 +27,77 @@ jobs:
       - name: Run Test
         run: npm test
 
-  build_and_deploy:
-    if: github.base_ref == 'master' && github.event.pull_request.merged == true
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup .env
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_PORT: 80
-          envkey_NODE_ENV: production
-          envkey_CLIENT_URI: https://localhost:3000
-          envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
-          envkey_MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
-          envkey_MONGO_USER: ${{ secrets.MONGO_USER }}
-          envkey_MONGO_PWD: ${{ secrets.MONGO_PWD }}
-          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          envkey_COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
-          envkey_FACEBOOK_APP_ID: ${{ secrets.FACEBOOK_APP_ID }}
-          envkey_FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
-          envkey_KAKAO_APP_ID: ${{ secrets.KAKAO_APP_ID }}
-          envkey_KAKAO_APP_SECRET: ${{ secrets.KAKAO_APP_SECRET }}
-          file_name: .env
-
-      - name: Install Package.json
-        run: npm ci
-
-      - name: Run Build
-        run: npm run build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: begin0dev-blog-repo
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition begin0dev-blog-task --query taskDefinition > task-definition.json
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: begin0dev-blog-container
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          cluster: begin0dev-blog-cluster
-          service: ec2-nest-app
-          wait-for-service-stability: true
+#  ecs 배포 주석처리
+#  build_and_deploy:
+#    if: github.base_ref == 'master' && github.event.pull_request.merged == true
+#    needs: test
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Setup .env
+#        uses: SpicyPizza/create-envfile@v1
+#        with:
+#          envkey_PORT: 80
+#          envkey_NODE_ENV: production
+#          envkey_CLIENT_URI: https://localhost:3000
+#          envkey_MONGO_URI: ${{ secrets.MONGO_URI }}
+#          envkey_MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+#          envkey_MONGO_USER: ${{ secrets.MONGO_USER }}
+#          envkey_MONGO_PWD: ${{ secrets.MONGO_PWD }}
+#          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+#          envkey_COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+#          envkey_FACEBOOK_APP_ID: ${{ secrets.FACEBOOK_APP_ID }}
+#          envkey_FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+#          envkey_KAKAO_APP_ID: ${{ secrets.KAKAO_APP_ID }}
+#          envkey_KAKAO_APP_SECRET: ${{ secrets.KAKAO_APP_SECRET }}
+#          file_name: .env
+#
+#      - name: Install Package.json
+#        run: npm ci
+#
+#      - name: Run Build
+#        run: npm run build
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ap-northeast-2
+#
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v1
+#
+#      - name: Build, tag, and push image to Amazon ECR
+#        id: build-image
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          ECR_REPOSITORY: begin0dev-blog-repo
+#          IMAGE_TAG: ${{ github.sha }}
+#        run: |
+#          docker build -f docker/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+#
+#      - name: Download task definition
+#        run: |
+#          aws ecs describe-task-definition --task-definition begin0dev-blog-task --query taskDefinition > task-definition.json
+#
+#      - name: Fill in the new image ID in the Amazon ECS task definition
+#        id: task-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1
+#        with:
+#          task-definition: task-definition.json
+#          container-name: begin0dev-blog-container
+#          image: ${{ steps.build-image.outputs.image }}
+#
+#      - name: Deploy Amazon ECS task definition
+#        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#        with:
+#          task-definition: ${{ steps.task-def.outputs.task-definition }}
+#          cluster: begin0dev-blog-cluster
+#          service: ec2-nest-app
+#          wait-for-service-stability: true

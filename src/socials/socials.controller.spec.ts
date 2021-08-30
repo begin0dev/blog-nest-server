@@ -77,9 +77,6 @@ describe('SocialsController', () => {
     const mockReturnUser = {
       ...userBase,
       oAuth: userAttr.oAuth,
-      toJSON() {
-        return userBase;
-      },
     };
 
     jest.spyOn(usersService, 'findBySocialId').mockResolvedValueOnce(mockReturnUser);
@@ -100,9 +97,6 @@ describe('SocialsController', () => {
     const mockReturnUser = {
       ...userBase,
       oAuth: userAttr.oAuth,
-      toJSON() {
-        return userBase;
-      },
     };
 
     jest.spyOn(usersService, 'create').mockResolvedValueOnce(mockReturnUser);
