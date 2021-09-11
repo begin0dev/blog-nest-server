@@ -55,12 +55,10 @@ export class UsersService {
   async findByVerifyCode(verifyCode: string) {
     try {
       const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
+      // 비동기 토큰 제거
       if (user)
-        this.userModel
-          .updateOne(
-            { _id: user._id },
-            { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
-          )
+        user
+          .updateOne({ $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } })
           .then();
       if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
       return user;
