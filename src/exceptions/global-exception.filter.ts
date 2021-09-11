@@ -1,3 +1,4 @@
+import * as newrelic from 'newrelic';
 import { Response } from 'express';
 import { Catch, HttpException, ExceptionFilter, ArgumentsHost } from '@nestjs/common';
 
@@ -10,6 +11,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
+    newrelic.noticeError(exception);
     response.status(status).json({
       status: JsendStatus.ERROR,
       message: exception.message,
