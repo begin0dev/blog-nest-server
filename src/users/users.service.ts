@@ -1,6 +1,6 @@
 import * as dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -56,10 +56,12 @@ export class UsersService {
     try {
       const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
       // 비동기 토큰 제거
-      if (user)
-        user
-          .updateOne({ $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } })
-          .then();
+      if (user) {
+        await this.userModel.updateOne(
+          { _id: user._id },
+          { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
+        );
+      }
       if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
       return user;
     } catch (err) {
@@ -67,11 +69,11 @@ export class UsersService {
     }
   }
 
-  updateRefreshToken(_id: ObjectId | string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
+  updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
     return this.userModel.updateOne({ _id }, { $set: { 'oAuth.local': local } });
   }
 
-  deleteRefreshToken(_id: ObjectId | string) {
+  deleteRefreshToken(_id: string) {
     return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': '' } });
   }
 }
