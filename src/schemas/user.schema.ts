@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Dayjs } from 'dayjs';
 
-@Schema()
 class Local {
   @Prop({ sparse: true, unique: true, index: true })
   refreshToken: string;
@@ -17,13 +16,11 @@ class Local {
   verifyCodeSendAt?: Date | Dayjs;
 }
 
-@Schema()
 class Social {
   @Prop({ sparse: true, unique: true, index: true })
   id: string;
 }
 
-@Schema()
 class OAuth {
   @Prop()
   local?: Local;
@@ -58,14 +55,3 @@ export class User {
 
 export type TUserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.set('toJSON', {
-  transform({ _id, displayName, profileImageUrl, isAdmin }: TUserDocument) {
-    return {
-      _id: _id.toHexString(),
-      displayName,
-      profileImageUrl,
-      isAdmin,
-    };
-  },
-});
