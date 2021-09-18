@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Dayjs } from 'dayjs';
 
-@Schema()
 class Local {
   @Prop({ sparse: true, unique: true, index: true })
   refreshToken: string;
@@ -17,13 +16,11 @@ class Local {
   verifyCodeSendAt?: Date | Dayjs;
 }
 
-@Schema()
 class Social {
   @Prop({ sparse: true, unique: true, index: true })
   id: string;
 }
 
-@Schema()
 class OAuth {
   @Prop()
   local?: Local;

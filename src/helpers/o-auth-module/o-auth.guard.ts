@@ -1,9 +1,9 @@
-import { CanActivate, Injectable, ExecutionContext, mixin, Inject } from '@nestjs/common';
+import { CanActivate, Injectable, ExecutionContext, mixin, Inject, Type } from '@nestjs/common';
 
 import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
 import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
 
-export function OAuthGuard(provider: TOAuthProvider) {
+export function OAuthGuard(provider: TOAuthProvider): Type<CanActivate> {
   @Injectable()
   class MixinOAuthGuard implements CanActivate {
     constructor(@Inject(OAuthService.name) private readonly oAuthService: OAuthService) {}

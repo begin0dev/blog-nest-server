@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
 
-import { BaseEntity } from '~app/entities/base.entity';
+import { BaseSerializer } from '~app/serializers/base.serializer';
 
-export class UserEntity extends BaseEntity {
+export class UserSerializer extends BaseSerializer {
   @Expose()
   displayName: string;
 

@@ -27,10 +27,7 @@ export class CloudinaryService {
 
     this.uploader = multer({
       ...multerOptions,
-      storage: new CloudinaryStorage({
-        cloudinary,
-        params: { ...cloudinaryParams },
-      }),
+      storage: new CloudinaryStorage({ cloudinary, params: { ...cloudinaryParams } }),
     });
   }
 

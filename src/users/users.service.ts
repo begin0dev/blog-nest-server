@@ -55,6 +55,7 @@ export class UsersService {
   async findByVerifyCode(verifyCode: string) {
     try {
       const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
+      // 비동기 토큰 제거
       if (user) {
         await this.userModel.updateOne(
           { _id: user._id },
