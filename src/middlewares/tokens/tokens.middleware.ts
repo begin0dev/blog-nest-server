@@ -41,7 +41,7 @@ export class TokensMiddleware implements NestMiddleware {
           return next();
         }
 
-        req.user = new ModelSerializer(UserSerializer, user).asJSON();
+        req.user = new ModelSerializer(UserSerializer, user).toJSON();
         accessToken = this.tokensService.generateAccessToken({ user: req.user });
         res.cookie('accessToken', accessToken, cookieOptions);
 

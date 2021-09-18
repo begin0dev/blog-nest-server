@@ -10,9 +10,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
-    response.status(status).json({
-      status: JsendStatus.ERROR,
-      message: exception.message,
-    });
+    response.status(status).json({ status: JsendStatus.ERROR, message: exception.message });
   }
 }

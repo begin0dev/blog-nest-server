@@ -2,12 +2,18 @@ import { ClassConstructor, classToPlain, plainToClass } from 'class-transformer'
 
 type ClassToPlainType<T> = Pick<T, keyof T>;
 
-class ModelSerializer<E> {
-  constructor(private readonly modelEntity: ClassConstructor<E>, private readonly json: Partial<E>) {}
+class ModelSerializer<S> {
+  private readonly serializer: S;
 
-  public asJSON() {
-    const model: E = plainToClass(this.modelEntity, this.json, { excludeExtraneousValues: true });
-    return classToPlain(model) as ClassToPlainType<E>;
+  constructor(
+    private readonly modelEntity: ClassConstructor<S>,
+    private readonly json: Partial<ClassToPlainType<S>>,
+  ) {
+    this.serializer = plainToClass(modelEntity, json, { excludeExtraneousValues: true });
+  }
+
+  public toJSON() {
+    return classToPlain(this.serializer) as ClassToPlainType<S>;
   }
 }
 
