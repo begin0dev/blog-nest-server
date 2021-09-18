@@ -55,13 +55,12 @@ export class UsersService {
   async findByVerifyCode(verifyCode: string) {
     try {
       const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
-      if (user)
-        this.userModel
-          .updateOne(
-            { _id: user._id },
-            { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
-          )
-          .then();
+      if (user) {
+        await this.userModel.updateOne(
+          { _id: user._id },
+          { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
+        );
+      }
       if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
       return user;
     } catch (err) {

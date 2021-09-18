@@ -15,8 +15,8 @@ import { ICurrentUser, CurrentUser } from '~app/decorators/user.decorator';
 import { User } from '~app/schemas/user.schema';
 import { mockUser } from '~app/schemas/__mocks__/user';
 import { TUserDocument } from '~app/schemas/user.schema';
-import ModelSerializer from '~app/helpers/model-serializer';
 import { UserEntity } from '~app/entities/user.entity';
+import ModelSerializer from '~app/helpers/model-serializer';
 
 describe('Token middleware test', () => {
   let app: INestApplication;
@@ -24,11 +24,6 @@ describe('Token middleware test', () => {
   let userModel: Model<TUserDocument>;
 
   const JWT_SECRET = faker.datatype.uuid();
-  const configService = {
-    get(key: string) {
-      if (key === 'JWT_SECRET') return JWT_SECRET;
-    },
-  };
 
   const extractCookies = (cookies: string[]): Record<string, string> =>
     cookies.reduce((acc, cur) => {
@@ -56,7 +51,13 @@ describe('Token middleware test', () => {
       controllers: [TestsController],
     })
       .overrideProvider(ConfigService)
-      .useValue(configService)
+      .useValue({
+        get(key: string) {
+          return {
+            JWT_SECRET,
+          }[key];
+        },
+      })
       .compile();
 
     app = module.createNestApplication();

@@ -16,14 +16,17 @@ describe('UsersController', () => {
     deleteRefreshToken: jest.fn(),
     findByVerifyCode: jest.fn(),
   };
+  const getCurrentUser = () => {
+    const { displayName, profileImageUrl, isAdmin } = mockUser();
+    return {
+      _id: faker.datatype.uuid(),
+      displayName,
+      profileImageUrl,
+      isAdmin,
+    };
+  };
 
   beforeEach(async () => {
-    const configService = {
-      get(key: string) {
-        if (key === 'JWT_SECRET') return 'test_jwt_secret';
-      },
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService, TokensService, ConfigService],
@@ -31,7 +34,13 @@ describe('UsersController', () => {
       .overrideProvider(UsersService)
       .useValue(usersService)
       .overrideProvider(ConfigService)
-      .useValue(configService)
+      .useValue({
+        get(key: string) {
+          return {
+            JWT_SECRET: 'test_jwt_secret',
+          }[key];
+        },
+      })
       .compile();
 
     usersController = module.get<UsersController>(UsersController);
@@ -46,19 +55,8 @@ describe('UsersController', () => {
     res.cookie = jest.fn().mockReturnValue(res);
 
     const userAttr = mockUser();
-    const mockReturnUser = {
-      ...userAttr,
-      toJSON() {
-        return {
-          _id: faker.datatype.uuid(),
-          displayName: userAttr.displayName,
-          profileImageUrl: userAttr.profileImageUrl,
-          isAdmin: userAttr.isAdmin,
-        };
-      },
-    };
 
-    jest.spyOn(usersService, 'findByVerifyCode').mockResolvedValueOnce(mockReturnUser);
+    jest.spyOn(usersService, 'findByVerifyCode').mockResolvedValueOnce(userAttr);
 
     expect(usersController.verify(userAttr.oAuth.local.verifyCode, res)).not.toBeNull();
     expect(res.cookie.call.length > 0).toBeTruthy();
@@ -76,29 +74,15 @@ describe('UsersController', () => {
   it('#me', () => {
     expect(usersController.me(null).payload).toBeNull();
 
-    const { displayName, profileImageUrl, isAdmin } = mockUser();
-    const currentUser = {
-      _id: faker.datatype.uuid(),
-      displayName,
-      profileImageUrl,
-      isAdmin,
-    };
-
+    const currentUser = getCurrentUser();
     expect(usersController.me(currentUser).payload).toEqual(currentUser);
   });
 
   it('#delete', async () => {
-    const { displayName, profileImageUrl, isAdmin } = mockUser();
-    const currentUser = {
-      _id: faker.datatype.uuid(),
-      displayName,
-      profileImageUrl,
-      isAdmin,
-    };
-
     const res = createResponse();
     res.clearCookie = jest.fn().mockReturnThis();
 
+    const currentUser = getCurrentUser();
     await usersController.delete(currentUser, res);
     expect(usersService.deleteRefreshToken).toBeCalledTimes(1);
     expect(res.clearCookie).toBeCalledTimes(2);

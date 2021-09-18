@@ -11,23 +11,15 @@ import { mockUser } from '~app/schemas/__mocks__/user';
 describe('SocialsController', () => {
   let module: TestingModule;
   let socialsController: SocialsController;
+  let usersService;
 
   const clientUri = faker.internet.url();
-  const configService = {
-    get(key: string) {
-      if (key === 'CLIENT_URI') return clientUri;
-    },
-  };
   const userAttr = mockUser();
   const profile = {
     id: faker.datatype.uuid(),
     name: userAttr.displayName,
     picture: { data: { url: userAttr.profileImageUrl } },
   };
-  const oAuthService = {
-    getProfile: async () => profile,
-  };
-  let usersService;
 
   beforeEach(async () => {
     usersService = {
@@ -40,11 +32,19 @@ describe('SocialsController', () => {
       providers: [ConfigService, OAuthService, UsersService, TokensService],
     })
       .overrideProvider(ConfigService)
-      .useValue(configService)
+      .useValue({
+        get(key: string) {
+          return {
+            CLIENT_URI: clientUri,
+          }[key];
+        },
+      })
       .overrideProvider(UsersService)
       .useValue(usersService)
       .overrideProvider(OAuthService)
-      .useValue(oAuthService)
+      .useValue({
+        getProfile: async () => profile,
+      })
       .compile();
 
     socialsController = module.get<SocialsController>(SocialsController);
@@ -70,16 +70,10 @@ describe('SocialsController', () => {
   it('#facebookCallback - findBySocialId', async () => {
     const userBase = {
       _id: faker.datatype.uuid(),
-      displayName: userAttr.displayName,
-      profileImageUrl: userAttr.profileImageUrl,
-      isAdmin: userAttr.isAdmin,
-    };
-    const mockReturnUser = {
-      ...userBase,
-      oAuth: userAttr.oAuth,
+      ...userAttr,
     };
 
-    jest.spyOn(usersService, 'findBySocialId').mockResolvedValueOnce(mockReturnUser);
+    jest.spyOn(usersService, 'findBySocialId').mockResolvedValueOnce(userBase);
 
     await socialsController.facebookCallback('test_token');
 
@@ -90,16 +84,10 @@ describe('SocialsController', () => {
   it('#facebookCallback', async () => {
     const userBase = {
       _id: faker.datatype.uuid(),
-      displayName: userAttr.displayName,
-      profileImageUrl: userAttr.profileImageUrl,
-      isAdmin: userAttr.isAdmin,
-    };
-    const mockReturnUser = {
-      ...userBase,
-      oAuth: userAttr.oAuth,
+      ...userAttr,
     };
 
-    jest.spyOn(usersService, 'create').mockResolvedValueOnce(mockReturnUser);
+    jest.spyOn(usersService, 'create').mockResolvedValueOnce(userBase);
 
     await socialsController.facebookCallback('test_token');
 

@@ -18,8 +18,8 @@ import { UsersService } from '~app/users/users.service';
 import { cookieOptions } from '~app/helpers/base';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { JsendReturnType } from '~app/types/base.types';
-import ModelSerializer from '~app/helpers/model-serializer';
 import { UserEntity } from '~app/entities/user.entity';
+import ModelSerializer from '~app/helpers/model-serializer';
 
 @ApiTags('v1/users')
 @Controller('v1/users')

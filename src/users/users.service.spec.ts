@@ -19,11 +19,6 @@ describe('UsersService', () => {
   let userModel: Model<TUserDocument>;
 
   const JWT_SECRET = faker.datatype.uuid();
-  const configService = {
-    get(key: string) {
-      if (key === 'JWT_SECRET') return JWT_SECRET;
-    },
-  };
 
   beforeEach(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -37,7 +32,13 @@ describe('UsersService', () => {
       providers: [ConfigService, TokensService, UsersService],
     })
       .overrideProvider(ConfigService)
-      .useValue(configService)
+      .useValue({
+        get(key: string) {
+          return {
+            JWT_SECRET,
+          }[key];
+        },
+      })
       .compile();
 
     usersService = module.get<UsersService>(UsersService);
