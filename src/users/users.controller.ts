@@ -42,7 +42,7 @@ export class UsersController {
     const user = await this.usersService.findByVerifyCode(code);
     if (!user) throw new HttpException('잘못된 요청입니다.', HttpStatus.FORBIDDEN);
 
-    const userJSON: ICurrentUser = new ModelSerializer(UserSerializer, user).asJSON();
+    const userJSON: ICurrentUser = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = this.tokensService.generateAccessToken({ user: userJSON });
     res.cookie('accessToken', accessToken, cookieOptions);
     res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);

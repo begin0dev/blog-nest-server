@@ -83,7 +83,7 @@ describe('Token middleware test', () => {
 
   it('Exist verified access token', async () => {
     const user = await userModel.create(mockUser());
-    const userJSON = new ModelSerializer(UserSerializer, user).asJSON();
+    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = jwt.sign({ user: userJSON }, JWT_SECRET);
 
     await request(app.getHttpServer())
@@ -94,7 +94,7 @@ describe('Token middleware test', () => {
 
   it('Refresh token is verified and Access token is expired', async () => {
     const user = await userModel.create(mockUser());
-    const userJSON = new ModelSerializer(UserSerializer, user).asJSON();
+    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
@@ -110,7 +110,7 @@ describe('Token middleware test', () => {
     const userAttr = mockUser();
     userAttr.oAuth.local.expiredAt = dayjs().add(20, 'minute');
     let user = await userModel.create(userAttr);
-    const userJSON = new ModelSerializer(UserSerializer, user).asJSON();
+    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
@@ -130,7 +130,7 @@ describe('Token middleware test', () => {
     const userAttr = mockUser();
     userAttr.oAuth.local.expiredAt = dayjs().subtract(1, 'hour');
     const user = await userModel.create(userAttr);
-    const userJSON = new ModelSerializer(UserSerializer, user).asJSON();
+    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = jwt.sign({ user: userJSON, exp: dayjs().subtract(1, 'hour').unix() }, JWT_SECRET);
 
     const res = await request(app.getHttpServer())
