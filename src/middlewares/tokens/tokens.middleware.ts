@@ -14,6 +14,8 @@ export class TokensMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     let accessToken = req.get('authorization') || req.cookies.accessToken;
+    const { refreshToken } = req.cookies;
+
     if (accessToken) {
       if (accessToken.startsWith('Bearer ')) accessToken = accessToken.slice(7, accessToken.length);
       try {
@@ -25,7 +27,6 @@ export class TokensMiddleware implements NestMiddleware {
       }
     }
 
-    const { refreshToken } = req.cookies;
     if (refreshToken) {
       try {
         const user = await this.usersService.findByRefreshToken(refreshToken);
@@ -42,8 +43,7 @@ export class TokensMiddleware implements NestMiddleware {
         }
 
         req.user = new ModelSerializer(UserSerializer, user).toJSON();
-        accessToken = this.tokensService.generateAccessToken({ user: req.user });
-        res.cookie('accessToken', accessToken, cookieOptions);
+        res.cookie('accessToken', this.tokensService.generateAccessToken({ user: req.user }), cookieOptions);
 
         // extended your refresh token so they do not expire while using your site
         const diffMinute = dayjs(expiredAt).diff(dayjs(), 'minute');

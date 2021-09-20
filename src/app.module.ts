@@ -9,7 +9,9 @@ import { CommonsModule } from './commons/commons.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       user: process.env.MONGO_USER,
       pass: process.env.MONGO_PWD,

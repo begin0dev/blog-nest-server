@@ -24,11 +24,6 @@ describe('Token middleware test', () => {
   let userModel: Model<TUserDocument>;
 
   const JWT_SECRET = faker.datatype.uuid();
-  const configService = {
-    get(key: string) {
-      if (key === 'JWT_SECRET') return JWT_SECRET;
-    },
-  };
 
   const extractCookies = (cookies: string[]): Record<string, string> =>
     cookies.reduce((acc, cur) => {

@@ -5,8 +5,8 @@ import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from '~app/app.module';
 import { GlobalInterceptor } from '~app/interceptors/global.interceptor';
@@ -44,7 +44,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // SET middleware
-  app.use(helmet());
+  app.use(helmet);
   app.use(cookieParser(COOKIE_SECRET));
   app.use(morgan(isProduction ? 'tiny' : 'dev'));
 

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Catch, HttpException, ExceptionFilter, ArgumentsHost } from '@nestjs/common';
+import { Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus } from '@nestjs/common';
 
 import { JsendStatus } from '~app/types/base.types';
 
@@ -7,9 +7,9 @@ import { JsendStatus } from '~app/types/base.types';
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
+    const res = ctx.getResponse<Response>();
+    const status = exception?.getStatus() ?? HttpStatus.INTERNAL_SERVER_ERROR;
 
-    response.status(status).json({ status: JsendStatus.ERROR, message: exception.message });
+    res.status(status).json({ status: JsendStatus.ERROR, message: exception.message });
   }
 }

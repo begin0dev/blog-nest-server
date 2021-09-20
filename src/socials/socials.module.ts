@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { SocialsController } from '~app/socials/socials.controller';
@@ -13,7 +12,7 @@ const callbackUrl = (provider: TOAuthProvider) => `/api/v1/socials/${provider}/c
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     OAuthModule.register([
       {
         provider: oAuthProviders.FACEBOOK,
@@ -31,7 +30,6 @@ const callbackUrl = (provider: TOAuthProvider) => `/api/v1/socials/${provider}/c
         grantType: 'authorization_code',
       },
     ]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   providers: [UsersService, TokensService],
   controllers: [SocialsController],

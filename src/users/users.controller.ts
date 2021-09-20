@@ -1,15 +1,5 @@
 import { Response } from 'express';
-import {
-  Delete,
-  Get,
-  Res,
-  Param,
-  UseGuards,
-  Controller,
-  HttpException,
-  HttpStatus,
-  Header,
-} from '@nestjs/common';
+import { Delete, Get, Res, Param, UseGuards, Controller, Header } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser, ICurrentUser } from '~app/decorators/user.decorator';
@@ -40,9 +30,7 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<JsendReturnType<ICurrentUser>> {
     const user = await this.usersService.findByVerifyCode(code);
-    if (!user) throw new HttpException('잘못된 요청입니다.', HttpStatus.FORBIDDEN);
-
-    const userJSON: ICurrentUser = new ModelSerializer(UserSerializer, user).toJSON();
+    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
     const accessToken = this.tokensService.generateAccessToken({ user: userJSON });
     res.cookie('accessToken', accessToken, cookieOptions);
     res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);

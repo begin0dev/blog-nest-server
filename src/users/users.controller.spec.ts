@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 import { createResponse } from 'node-mocks-http';
 import { ConfigService } from '@nestjs/config';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { UsersController } from '~app/users/users.controller';
@@ -66,7 +66,9 @@ describe('UsersController', () => {
     const res = createResponse();
     res.cookie = jest.fn().mockReturnValue(res);
 
-    jest.spyOn(usersService, 'findByVerifyCode').mockResolvedValueOnce(null);
+    jest.spyOn(usersService, 'findByVerifyCode').mockImplementation(() => {
+      throw new HttpException('잘못된 요청입니다.', HttpStatus.FORBIDDEN);
+    });
 
     expect(usersController.verify('', res)).rejects.toThrow(HttpException);
   });

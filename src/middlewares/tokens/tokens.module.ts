@@ -8,9 +8,9 @@ import { User, UserSchema } from '~app/schemas/user.schema';
 import { TokensMiddleware } from '~app/middlewares/tokens/tokens.middleware';
 
 @Module({
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
   providers: [ConfigService, TokensService, UsersService],
   exports: [TokensService, UsersService],
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
 })
 export class TokensModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
