@@ -1,7 +1,7 @@
 import * as dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { TUserDocument, User } from '~app/schemas/user.schema';
@@ -53,20 +53,15 @@ export class UsersService {
   }
 
   async findByVerifyCode(verifyCode: string) {
-    try {
-      const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
-      // 비동기 토큰 제거
-      if (user) {
-        await this.userModel.updateOne(
-          { _id: user._id },
-          { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
-        );
-      }
-      if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
-      return user;
-    } catch (err) {
-      return null;
-    }
+    const user = await this.userModel.findOne({ 'oAuth.local.verifyCode': verifyCode });
+    if (!user) throw new HttpException('잘못된 요청입니다.', HttpStatus.FORBIDDEN);
+
+    await this.userModel.updateOne(
+      { _id: user._id },
+      { $unset: { 'oAuth.local.verifyCode': '', 'oAuth.local.verifyCodeSendAt': '' } },
+    );
+    if (dayjs().diff(dayjs(user.oAuth.local.verifyCodeSendAt), 'minute') > 2) return null;
+    return user;
   }
 
   updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
