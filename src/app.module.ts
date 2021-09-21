@@ -19,9 +19,9 @@ import { CommonsModule } from './commons/commons.module';
       useCreateIndex: true,
     }),
     TokensModule,
+    CommonsModule,
     UsersModule,
     SocialsModule,
-    CommonsModule,
   ],
 })
 export class AppModule {}
