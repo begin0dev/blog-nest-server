@@ -65,10 +65,16 @@ export class UsersService {
   }
 
   updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
-    return this.userModel.updateOne({ _id }, { $set: { 'oAuth.local': local } });
+    return this.userModel.updateOne(
+      { _id },
+      { $set: { 'oAuth.local.refreshToken': local.refreshToken, 'oAuth.local.expiredAt': local.expiredAt } },
+    );
   }
 
   deleteRefreshToken(_id: string) {
-    return this.userModel.updateOne({ _id }, { $unset: { 'oAuth.local': '' } });
+    return this.userModel.updateOne(
+      { _id },
+      { $unset: { 'oAuth.local.refreshToken': '', 'oAuth.local.expiredAt': '' } },
+    );
   }
 }

@@ -128,7 +128,7 @@ describe('UsersService', () => {
     let user = await userModel.create(mockUser());
     expect(user.oAuth.local.refreshToken).not.toEqual(refreshToken);
 
-    await usersService.updateRefreshToken(user._id, { ...user.oAuth.local, refreshToken });
+    await usersService.updateRefreshToken(user._id, { refreshToken, expiredAt: user.oAuth.local.expiredAt });
     user = await usersService.findById(user._id);
     expect(user.oAuth.local.refreshToken).toEqual(refreshToken);
   });
@@ -139,6 +139,6 @@ describe('UsersService', () => {
 
     await usersService.deleteRefreshToken(user._id);
     user = await usersService.findById(user._id);
-    expect(user.oAuth.local).toBeUndefined();
+    expect(user.oAuth.local.refreshToken).toBeUndefined();
   });
 });
