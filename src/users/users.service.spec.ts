@@ -1,10 +1,11 @@
+import '../../test/mongo-test.helper';
+
 import * as dayjs from 'dayjs';
 import * as faker from 'faker';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import { mockUser } from '~app/schemas/__mocks__/user';
 import { UsersService } from '~app/users/users.service';
@@ -15,18 +16,14 @@ import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
 describe('UsersService', () => {
   let module: TestingModule;
   let usersService: UsersService;
-  let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
 
   const JWT_SECRET = faker.datatype.uuid();
 
   beforeEach(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const mongoURI = mongoServer.getUri();
-
     module = await Test.createTestingModule({
       imports: [
-        MongooseModule.forRoot(mongoURI),
+        MongooseModule.forRoot(global.mongoURI),
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
       ],
       providers: [ConfigService, TokensService, UsersService],
@@ -47,7 +44,6 @@ describe('UsersService', () => {
 
   afterEach(async () => {
     await module.close();
-    await mongoServer.stop();
   });
 
   it('should be defined', () => {
@@ -128,7 +124,7 @@ describe('UsersService', () => {
     let user = await userModel.create(mockUser());
     expect(user.oAuth.local.refreshToken).not.toEqual(refreshToken);
 
-    await usersService.updateRefreshToken(user._id, { ...user.oAuth.local, refreshToken });
+    await usersService.updateRefreshToken(user._id, { refreshToken, expiredAt: user.oAuth.local.expiredAt });
     user = await usersService.findById(user._id);
     expect(user.oAuth.local.refreshToken).toEqual(refreshToken);
   });
@@ -139,6 +135,6 @@ describe('UsersService', () => {
 
     await usersService.deleteRefreshToken(user._id);
     user = await usersService.findById(user._id);
-    expect(user.oAuth.local).toBeUndefined();
+    expect(user.oAuth.local.refreshToken).toBeUndefined();
   });
 });

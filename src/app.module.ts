@@ -6,6 +6,7 @@ import { TokensModule } from '~app/middlewares/tokens/tokens.module';
 import { UsersModule } from '~app/users/users.module';
 import { SocialsModule } from '~app/socials/socials.module';
 import { CommonsModule } from './commons/commons.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CommonsModule } from './commons/commons.module';
     CommonsModule,
     UsersModule,
     SocialsModule,
+    PostsModule,
   ],
 })
 export class AppModule {}

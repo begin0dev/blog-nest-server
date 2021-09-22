@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus } from '@nestjs/common';
 
-import { JsendStatus } from '~app/types/base.types';
+import { JsendStatus } from '~app/types/jsend.types';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
