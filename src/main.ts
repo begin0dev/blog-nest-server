@@ -44,7 +44,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // SET middleware
-  app.use(helmet);
+  app.use(helmet());
   app.use(cookieParser(COOKIE_SECRET));
   app.use(morgan(isProduction ? 'tiny' : 'dev'));
 
