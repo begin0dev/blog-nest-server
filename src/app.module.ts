@@ -10,15 +10,8 @@ import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    MongooseModule.forRoot(process.env.MONGO_URI, {
-      user: process.env.MONGO_USER,
-      pass: process.env.MONGO_PWD,
-      dbName: process.env.MONGO_DB_NAME,
-      useCreateIndex: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRoot(process.env.MONGO_URI, { useCreateIndex: true }),
     TokensModule,
     CommonsModule,
     UsersModule,
