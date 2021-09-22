@@ -1,7 +1,7 @@
 import * as multer from 'multer';
-import { Options } from 'multer-storage-cloudinary';
+import { UploadApiOptions } from 'cloudinary';
 
 export type TCloudinaryFilesInterceptorOptions = {
-  cloudinaryParams?: Options['params'];
+  cloudinaryParams?: UploadApiOptions;
   multerOptions?: Omit<multer.Options, 'storage'>;
 };
