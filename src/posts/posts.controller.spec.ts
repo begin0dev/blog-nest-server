@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 
@@ -9,7 +10,10 @@ describe('PostsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostsController],
       providers: [PostsService],
-    }).compile();
+    })
+      .overrideProvider(PostsService)
+      .useValue({})
+      .compile();
 
     controller = module.get<PostsController>(PostsController);
   });
