@@ -16,6 +16,8 @@ export class CommonsController {
   @UseGuards(AuthGuard(authTarget.USER))
   @UseInterceptors(
     CloudinaryFilesInterceptor('images', 3, {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       cloudinaryParams: { folder: 'images', allowed_formats: ['jpg', 'jpeg', 'png', 'webp'] },
       multerOptions: { limits: { fileSize: 1024 * 1024 * 3 } },
     }),
