@@ -4,17 +4,20 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { UsersService } from '~app/users/users.service';
-import { cookieOptions } from '~app/helpers/base';
+import { cookieOptions } from '~app/helpers/constants';
 import { UserSerializer } from '~app/serializers/user.serializer';
 import ModelSerializer from '~app/helpers/model-serializer';
 
 @Injectable()
 export class TokensMiddleware implements NestMiddleware {
+  private readonly ACCESS_TOKEN_COOKIE_KEY = 'accessToken';
+  private readonly REFRESH_TOKEN_COOKIE_KEY = 'refreshToken';
+
   constructor(private readonly tokensService: TokensService, private readonly usersService: UsersService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    let accessToken = req.get('authorization') || req.cookies.accessToken;
-    const { refreshToken } = req.cookies;
+    let accessToken = req.get('authorization') || req.cookies[this.ACCESS_TOKEN_COOKIE_KEY];
+    const refreshToken = req.cookies[this.REFRESH_TOKEN_COOKIE_KEY];
 
     if (accessToken) {
       if (accessToken.startsWith('Bearer ')) accessToken = accessToken.slice(7, accessToken.length);
@@ -23,7 +26,7 @@ export class TokensMiddleware implements NestMiddleware {
         req.user = user;
         return next();
       } catch (err) {
-        res.clearCookie('accessToken', cookieOptions);
+        res.clearCookie(this.ACCESS_TOKEN_COOKIE_KEY, cookieOptions);
       }
     }
 
@@ -31,30 +34,33 @@ export class TokensMiddleware implements NestMiddleware {
       try {
         const user = await this.usersService.findByRefreshToken(refreshToken);
         if (!user) {
-          res.clearCookie('refreshToken', cookieOptions);
+          res.clearCookie(this.REFRESH_TOKEN_COOKIE_KEY, cookieOptions);
           return next();
         }
 
-        const { expiredAt } = user.oAuth?.local || {};
+        const { expiredAt } = user.oAuth.local;
         if (dayjs() > dayjs(expiredAt)) {
           await this.usersService.deleteRefreshToken(user._id);
-          res.clearCookie('refreshToken', cookieOptions);
+          res.clearCookie(this.REFRESH_TOKEN_COOKIE_KEY, cookieOptions);
           return next();
         }
 
         req.user = new ModelSerializer(UserSerializer, user).toJSON();
-        res.cookie('accessToken', this.tokensService.generateAccessToken({ user: req.user }), cookieOptions);
+        res.cookie(
+          this.ACCESS_TOKEN_COOKIE_KEY,
+          this.tokensService.generateAccessToken({ user: req.user }),
+          cookieOptions,
+        );
 
         // extended your refresh token so they do not expire while using your site
-        const diffMinute = dayjs(expiredAt).diff(dayjs(), 'minute');
-        if (diffMinute <= 30) {
+        if (dayjs(expiredAt).diff(dayjs(), 'minute') <= 30) {
           await this.usersService.updateRefreshToken(user._id, {
             refreshToken,
-            expiredAt: dayjs().add(60 + diffMinute, 'minute'),
+            expiredAt: dayjs().add(90, 'minute'),
           });
         }
       } catch (err) {
-        res.clearCookie('refreshToken', cookieOptions);
+        res.clearCookie(this.REFRESH_TOKEN_COOKIE_KEY, cookieOptions);
       }
     }
 

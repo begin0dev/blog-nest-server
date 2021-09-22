@@ -8,7 +8,7 @@ import {
   CallHandler,
 } from '@nestjs/common';
 
-import { JsendStatus } from '~app/types/base.types';
+import { JsendStatus } from '~app/types/jsend.types';
 
 @Injectable()
 export class GlobalInterceptor implements NestInterceptor {
