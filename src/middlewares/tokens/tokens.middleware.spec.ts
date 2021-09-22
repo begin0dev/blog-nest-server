@@ -1,10 +1,11 @@
+import '../../../test/mongo-test.helper';
+
 import * as dayjs from 'dayjs';
 import * as faker from 'faker';
 import * as jwt from 'jsonwebtoken';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 import { Model } from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Controller, Get, INestApplication } from '@nestjs/common';
@@ -20,7 +21,6 @@ import ModelSerializer from '~app/helpers/model-serializer';
 
 describe('Token middleware test', () => {
   let app: INestApplication;
-  let mongoServer: MongoMemoryServer;
   let userModel: Model<TUserDocument>;
 
   const JWT_SECRET = faker.datatype.uuid();
@@ -34,9 +34,6 @@ describe('Token middleware test', () => {
     }, {});
 
   beforeEach(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const mongoURI = mongoServer.getUri();
-
     @Controller()
     class TestsController {
       @Get()
@@ -46,7 +43,7 @@ describe('Token middleware test', () => {
     }
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MongooseModule.forRoot(mongoURI), TokensModule],
+      imports: [MongooseModule.forRoot(global.mongoURI), TokensModule],
       providers: [ConfigService],
       controllers: [TestsController],
     })
@@ -69,7 +66,6 @@ describe('Token middleware test', () => {
 
   afterEach(async () => {
     await app.close();
-    await mongoServer.stop();
   });
 
   it('Not exist token', async () => {
