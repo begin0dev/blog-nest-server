@@ -14,17 +14,17 @@ export function OAuthGuard(provider: TOAuthProvider): Type<CanActivate> {
 
       const { code, error, error_description } = req.query;
       const serverUrl = `${req.protocol}://${req.get('host')}`;
-      const currentUrl = `${serverUrl}${req.path}`;
+      const redirectUri = `${serverUrl}${req.path}`;
+      console.log(serverUrl, redirectUri);
 
       if (error) res.locals.error = error_description;
-      if (!code)
-        res.locals.redirectUrl = this.oAuthService.getAuthorizeUrl({ provider, redirectUri: currentUrl });
+      if (!code) res.locals.redirectUrl = this.oAuthService.getAuthorizeUrl({ provider, redirectUri });
       if (code) {
         try {
           const accessToken = await this.oAuthService.getAccessToken({
             provider,
             code,
-            redirectUri: currentUrl,
+            redirectUri,
           });
           res.locals.redirectUrl = this.oAuthService.getCallbackUrl(provider, serverUrl, accessToken);
         } catch (err) {
