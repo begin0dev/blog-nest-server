@@ -63,15 +63,14 @@ export class OAuthService {
   getAuthorizeUrl({ provider, redirectUri }: IAuthorizeUrl): string {
     const { clientId, scope, options } = this.oAuthOptions[provider];
     const { authorizationUrl, defaultScope } = SOCIAL_BASE[provider];
-    const query = {
+
+    const queryString = qs.stringify({
       response_type: 'code',
       client_id: clientId,
       redirect_uri: redirectUri,
       scope: [...new Set(defaultScope.concat(scope || []))].join(','),
       ...(options || {}),
-    };
-
-    const queryString = qs.stringify(query);
+    });
     return `${authorizationUrl}?${queryString}`;
   }
 
