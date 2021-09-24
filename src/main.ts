@@ -7,6 +7,7 @@ import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from '~app/app.module';
 import { GlobalInterceptor } from '~app/interceptors/global.interceptor';
@@ -18,13 +19,17 @@ async function bootstrap() {
   const port = PORT || 3001;
   const isProduction = NODE_ENV === 'production';
 
-  const app = await NestFactory.create(AppModule);
-  // SET global
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.set('trust proxy');
+  app.setGlobalPrefix('/api');
   app.enableCors({
     origin: isProduction ? [CLIENT_URI, 'localhost:3000'] : '*',
     credentials: true,
   });
-  app.setGlobalPrefix('/api');
+  app.use(helmet());
+  app.use(cookieParser(COOKIE_SECRET));
+  app.use(morgan(isProduction ? 'tiny' : 'dev'));
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
@@ -42,11 +47,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, builder);
   SwaggerModule.setup('api-docs', app, document);
-
-  // SET middleware
-  app.use(helmet());
-  app.use(cookieParser(COOKIE_SECRET));
-  app.use(morgan(isProduction ? 'tiny' : 'dev'));
 
   // RUN server
   await app.listen(port);

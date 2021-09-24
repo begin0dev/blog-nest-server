@@ -10,7 +10,7 @@ import { AccessToken, ErrorMessage, RedirectUrl } from '~app/helpers/o-auth-modu
 import { IFacebookAccount, IKakaoAccount } from '~app/socials/socials.types';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
 
-@ApiTags('v1/socials')
+@ApiTags('socials')
 @Controller('v1/socials')
 @UseGuards(AuthGuard(authTarget.VISITOR))
 export class SocialsController {

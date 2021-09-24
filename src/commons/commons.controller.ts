@@ -4,7 +4,7 @@ import { Controller, Get, Post, UploadedFiles, UseGuards, UseInterceptors } from
 import { CloudinaryFilesInterceptor } from '~app/interceptors/cloudinary/cloudinary-files.interceptor';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
 
-@ApiTags('v1/commons')
+@ApiTags('commons')
 @Controller('v1/commons')
 export class CommonsController {
   @Get('health')
