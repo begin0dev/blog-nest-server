@@ -9,7 +9,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
-    const status = exception?.getStatus() ?? HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception.getStatus?.() ?? HttpStatus.INTERNAL_SERVER_ERROR;
 
     if (status === 500 && exception.stack) newrelic.noticeError(exception);
 
