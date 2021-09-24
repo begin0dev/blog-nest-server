@@ -4,8 +4,10 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('posts')
+@ApiTags('posts')
+@Controller('v1/posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 

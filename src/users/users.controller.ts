@@ -11,7 +11,7 @@ import { JsendReturnType } from '~app/types/jsend.types';
 import { UserSerializer } from '~app/serializers/user.serializer';
 import ModelSerializer from '~app/helpers/model-serializer';
 
-@ApiTags('v1/users')
+@ApiTags('users')
 @Controller('v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService, private readonly tokensService: TokensService) {}
