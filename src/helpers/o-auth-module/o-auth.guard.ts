@@ -15,7 +15,7 @@ export function OAuthGuard(provider: TOAuthProvider): Type<CanActivate> {
       const { code, error, error_description } = req.query;
       const serverUrl = `${req.protocol}://${req.get('host')}`;
       const redirectUri = `${serverUrl}${req.path}`;
-      console.log(serverUrl, redirectUri);
+      console.log(req.headers, serverUrl, redirectUri);
 
       if (error) res.locals.error = error_description;
       if (!code) res.locals.redirectUrl = this.oAuthService.getAuthorizeUrl({ provider, redirectUri });
