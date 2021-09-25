@@ -12,6 +12,8 @@ import { UsersService } from '~app/users/users.service';
 import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
+import ModelSerializer from '~app/helpers/model-serializer';
+import { UserSerializer } from '~app/serializers/user.serializer';
 
 describe('UsersService', () => {
   let module: TestingModule;
