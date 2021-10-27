@@ -9,11 +9,11 @@ class ModelSerializer<S> {
     private readonly modelEntity: ClassConstructor<S>,
     private readonly json: Partial<ClassToPlainType<S>>,
   ) {
-    this.serializer = plainToClass(modelEntity, json, { excludeExtraneousValues: true });
+    this.serializer = plainToClass(modelEntity, json);
   }
 
   public toJSON() {
-    return classToPlain(this.serializer) as ClassToPlainType<S>;
+    return classToPlain(this.serializer, { excludeExtraneousValues: true });
   }
 }
 
