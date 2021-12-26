@@ -5,8 +5,12 @@
   "author": "begin0dev",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
+    "heroku-prebuild": "npm install --only=dev",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
