@@ -32,8 +32,10 @@ export class UsersController {
     const user = await this.usersService.findByVerifyCode(code);
     const userJSON = modelSerializer(user, UserSerializer);
     const accessToken = this.tokensService.generateAccessToken({ user: userJSON });
+    const refreshToken = this.tokensService.generateRefreshToken();
+    await this.usersService.updateRefreshToken(user._id, { refreshToken });
     res.cookie('accessToken', accessToken, cookieOptions);
-    res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);
+    res.cookie('refreshToken', refreshToken, cookieOptions);
     return { payload: userJSON };
   }
 
