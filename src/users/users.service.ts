@@ -64,10 +64,15 @@ export class UsersService {
     return user;
   }
 
-  updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt: Dayjs | Date }) {
+  updateRefreshToken(_id: string, local: { refreshToken: string; expiredAt?: Dayjs | Date }) {
     return this.userModel.updateOne(
       { _id },
-      { $set: { 'oAuth.local.refreshToken': local.refreshToken, 'oAuth.local.expiredAt': local.expiredAt } },
+      {
+        $set: {
+          'oAuth.local.refreshToken': local.refreshToken,
+          'oAuth.local.expiredAt': local.expiredAt ?? dayjs().add(12, 'hour'),
+        },
+      },
     );
   }
 
