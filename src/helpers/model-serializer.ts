@@ -1,20 +1,12 @@
-import { ClassConstructor, classToPlain, plainToClass } from 'class-transformer';
+import { instanceToPlain, plainToInstance, type ClassConstructor } from 'class-transformer';
 
-type ClassToPlainType<T> = Pick<T, keyof T>;
+type ClassToPlainType<P> = Pick<P, keyof P>;
 
-class ModelSerializer<S> {
-  private readonly serializer: S;
-
-  constructor(
-    private readonly modelEntity: ClassConstructor<S>,
-    private readonly json: Partial<ClassToPlainType<S>>,
-  ) {
-    this.serializer = plainToClass(modelEntity, json);
-  }
-
-  public toJSON() {
-    return classToPlain(this.serializer, { excludeExtraneousValues: true });
-  }
+function modelSerializer<J, C>(plain: J, cls: ClassConstructor<C>): ClassToPlainType<J>;
+function modelSerializer<J, C>(plain: J[], cls: ClassConstructor<C>): ClassToPlainType<J>[];
+function modelSerializer(plain, cls) {
+  const modelInstance = plainToInstance(cls, plain, { excludeExtraneousValues: true });
+  return instanceToPlain(modelInstance);
 }
 
-export default ModelSerializer;
+export default modelSerializer;

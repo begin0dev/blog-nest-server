@@ -6,7 +6,7 @@ import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { UsersService } from '~app/users/users.service';
 import { cookieOptions } from '~app/helpers/constants';
 import { UserSerializer } from '~app/serializers/user.serializer';
-import ModelSerializer from '~app/helpers/model-serializer';
+import modelSerializer from '~app/helpers/model-serializer';
 
 @Injectable()
 export class TokensMiddleware implements NestMiddleware {
@@ -45,7 +45,7 @@ export class TokensMiddleware implements NestMiddleware {
           return next();
         }
 
-        req.user = new ModelSerializer(UserSerializer, user).toJSON();
+        req.user = modelSerializer(user, UserSerializer);
         res.cookie(
           this.ACCESS_TOKEN_COOKIE_KEY,
           this.tokensService.generateAccessToken({ user: req.user }),
