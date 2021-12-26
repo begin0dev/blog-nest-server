@@ -5,7 +5,7 @@ export class BaseSerializer {
   @Transform((value) => {
     const { _id } = value.obj;
     if (typeof _id === 'string') return _id;
-    return _id.toString();
+    return _id?.toString();
   })
   _id: string;
 }

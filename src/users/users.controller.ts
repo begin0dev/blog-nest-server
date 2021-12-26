@@ -9,7 +9,7 @@ import { cookieOptions } from '~app/helpers/constants';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { JsendReturnType } from '~app/types/jsend.types';
 import { UserSerializer } from '~app/serializers/user.serializer';
-import ModelSerializer from '~app/helpers/model-serializer';
+import modelSerializer from '~app/helpers/model-serializer';
 
 @ApiTags('users')
 @Controller('v1/users')
@@ -30,7 +30,7 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<JsendReturnType<ICurrentUser>> {
     const user = await this.usersService.findByVerifyCode(code);
-    const userJSON = new ModelSerializer(UserSerializer, user).toJSON();
+    const userJSON = modelSerializer(user, UserSerializer);
     const accessToken = this.tokensService.generateAccessToken({ user: userJSON });
     res.cookie('accessToken', accessToken, cookieOptions);
     res.cookie('refreshToken', user.oAuth.local.refreshToken, cookieOptions);
