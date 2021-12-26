@@ -1,4 +1,4 @@
-import { CanActivate, Injectable, ExecutionContext, mixin, Inject, Type } from '@nestjs/common';
+import { CanActivate, Injectable, ExecutionContext, mixin, Inject, Type, forwardRef } from '@nestjs/common';
 
 import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
 import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
@@ -6,14 +6,15 @@ import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
 export function OAuthGuard(provider: TOAuthProvider): Type<CanActivate> {
   @Injectable()
   class MixinOAuthGuard implements CanActivate {
-    constructor(@Inject(OAuthService.name) private readonly oAuthService: OAuthService) {}
+    constructor(@Inject(forwardRef(() => OAuthService)) private readonly oAuthService: OAuthService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const req = context.switchToHttp().getRequest();
       const res = context.switchToHttp().getResponse();
 
       const { code, error, error_description } = req.query;
-      const serverUrl = `${req.headers['x-forwarded-proto'] || req.protocol}://${req.get('host')}`;
+
+      const serverUrl = `${req.headers['x-forwarded-proto'] ?? req.protocol}://${req.get('host')}`;
       const redirectUri = `${serverUrl}${req.path}`;
 
       if (error) res.locals.error = error_description;
