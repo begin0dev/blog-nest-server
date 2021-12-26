@@ -9,9 +9,9 @@ import { TCloudinaryFilesInterceptorOptions } from '~app/interceptors/cloudinary
 
 @Injectable()
 export class CloudinaryService {
+  private uploader;
   private fileName: string;
   private maxCount: number;
-  private uploader;
 
   constructor(@Inject(CLOUDINARY_CONFIG_PROVIDER) private config: ConfigOptions) {}
 
@@ -27,12 +27,12 @@ export class CloudinaryService {
 
     this.uploader = multer({
       ...multerOptions,
-      storage: new CloudinaryStorage({ cloudinary, params: { ...cloudinaryParams } }),
+      storage: new CloudinaryStorage({ cloudinary, params: cloudinaryParams }),
     });
   }
 
   upload(ctx: HttpArgumentsHost) {
-    if (!this.fileName) throw new Error('파일이름이 설정되지 않았습니다.');
+    if (!this.fileName) throw new Error('파일 이름이 설정되지 않았습니다.');
     if (!this.maxCount) throw new Error('파일 등록수가 설정되지 않았습니다.');
 
     return new Promise((resolve, reject) => {

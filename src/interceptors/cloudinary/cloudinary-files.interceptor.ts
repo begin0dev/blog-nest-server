@@ -6,6 +6,7 @@ import {
   mixin,
   NestInterceptor,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
@@ -19,7 +20,9 @@ export function CloudinaryFilesInterceptor(
 ): Type<NestInterceptor> {
   @Injectable()
   class MixinInterceptor implements NestInterceptor {
-    constructor(@Inject(CloudinaryService.name) private readonly cloudinaryService: CloudinaryService) {
+    constructor(
+      @Inject(forwardRef(() => CloudinaryService)) private readonly cloudinaryService: CloudinaryService,
+    ) {
       this.cloudinaryService.setMulter(fileName, maxCount, options);
     }
 
