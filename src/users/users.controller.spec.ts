@@ -15,6 +15,7 @@ describe('UsersController', () => {
   const usersService = {
     deleteRefreshToken: jest.fn(),
     findByVerifyCode: jest.fn(),
+    updateRefreshToken: jest.fn(),
   };
   const getCurrentUser = () => {
     const { displayName, profileImageUrl, isAdmin } = mockUser();
