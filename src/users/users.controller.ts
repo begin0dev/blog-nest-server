@@ -5,7 +5,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, ICurrentUser } from '~app/decorators/user.decorator';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
 import { UsersService } from '~app/users/users.service';
-import { cookieOptions } from '~app/helpers/constants';
+import { cookieOptions } from '~app/types/constants';
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { JsendReturnType } from '~app/types/jsend.types';
 import { UserSerializer } from '~app/serializers/user.serializer';

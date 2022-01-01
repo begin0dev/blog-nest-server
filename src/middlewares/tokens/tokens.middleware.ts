@@ -4,7 +4,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 
 import { TokensService } from '~app/middlewares/tokens/tokens.service';
 import { UsersService } from '~app/users/users.service';
-import { cookieOptions } from '~app/helpers/constants';
+import { cookieOptions } from '~app/types/constants';
 import { UserSerializer } from '~app/serializers/user.serializer';
 import modelSerializer from '~app/helpers/model-serializer';
 

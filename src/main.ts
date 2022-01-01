@@ -22,6 +22,15 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.setGlobalPrefix('/api');
+  // SET swagger
+  const builder = new DocumentBuilder()
+    .setTitle('BEGIN0DEV Blog')
+    .setDescription('이 문서는 블로그를 위한 API 입니다.')
+    .setVersion(packageJSON.version)
+    .build();
+  const document = SwaggerModule.createDocument(app, builder);
+  SwaggerModule.setup('api-docs', app, document);
+
   app.enableCors({
     origin: isProduction ? [CLIENT_URI, 'localhost:3000'] : '*',
     credentials: true,
@@ -37,15 +46,6 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new GlobalInterceptor());
-
-  // SET swagger
-  const builder = new DocumentBuilder()
-    .setTitle('BEGIN0DEV Blog')
-    .setDescription('이 문서는 블로그를 위한 API 입니다.')
-    .setVersion(packageJSON.version)
-    .build();
-  const document = SwaggerModule.createDocument(app, builder);
-  SwaggerModule.setup('api-docs', app, document);
 
   // RUN server
   await app.listen(port);
