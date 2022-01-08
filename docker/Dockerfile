@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16-alpine
 
 MAINTAINER begin0dev <prosonic1@gmail.com>
 
