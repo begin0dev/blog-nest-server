@@ -6,7 +6,7 @@ import { OAuthModule } from '~app/helpers/o-auth-module/o-auth.module';
 import { oAuthProviders, TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
 import { UsersService } from '~app/users/users.service';
 import { User, UserSchema } from '~app/schemas/user.schema';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 
 const callbackUrl = (provider: TOAuthProvider) => `/api/v1/socials/${provider}/callback`;
 

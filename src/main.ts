@@ -15,8 +15,7 @@ import { GlobalExceptionFilter } from '~app/exceptions/global-exception.filter';
 import * as packageJSON from '../package.json';
 
 async function bootstrap() {
-  const { CLIENT_URI, COOKIE_SECRET, PORT, NODE_ENV } = process.env;
-  const port = PORT || 3001;
+  const { CLIENT_URI, COOKIE_SECRET, NODE_ENV, PORT = 3001 } = process.env;
   const isProduction = NODE_ENV === 'production';
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -48,8 +47,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new GlobalInterceptor());
 
   // RUN server
-  await app.listen(port);
-  console.log(`${NODE_ENV}: Server is running on port ${port}`);
+  await app.listen(PORT);
+  console.log(`${NODE_ENV}: Server is running on port ${PORT}`);
 }
 
 bootstrap();

@@ -9,28 +9,28 @@ export class Post {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   userId: User;
 
-  @IsBoolean()
   @Prop({ required: true })
+  @IsBoolean()
   isShow: boolean;
 
   @Prop({ required: true })
   category: TCategories;
 
+  @Prop({ required: true })
   @IsString()
   @Length(3, 30)
-  @Prop({ required: true })
   title: string;
 
-  @IsString()
   @Prop()
+  @IsString()
   content: string;
 
-  @IsString()
   @Prop({ required: true })
+  @IsString()
   thumbnail: string;
 
-  @IsString({ each: true })
   @Prop()
+  @IsString({ each: true })
   tags: string[];
 }
 

@@ -1,5 +1,3 @@
-import '../../test/mongo-test.helper';
-
 import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';

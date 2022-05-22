@@ -1,5 +1,3 @@
-import '../../../test/mongo-test.helper';
-
 import * as dayjs from 'dayjs';
 import * as faker from 'faker';
 import * as jwt from 'jsonwebtoken';
@@ -11,7 +9,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Controller, Get, INestApplication } from '@nestjs/common';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 
-import { TokensModule } from '~app/middlewares/tokens/tokens.module';
+import { TokensModule } from '~app/tokens/tokens.module';
 import { ICurrentUser, CurrentUser } from '~app/decorators/user.decorator';
 import { User } from '~app/schemas/user.schema';
 import { mockUser } from '~app/schemas/__mocks__/user';

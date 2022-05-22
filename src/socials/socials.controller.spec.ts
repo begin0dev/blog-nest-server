@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SocialsController } from '~app/socials/socials.controller';
 import { OAuthService } from '~app/helpers/o-auth-module/o-auth.service';
 import { UsersService } from '~app/users/users.service';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 import { mockUser } from '~app/schemas/__mocks__/user';
 
 describe('SocialsController', () => {

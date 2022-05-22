@@ -2,7 +2,7 @@ import * as dayjs from 'dayjs';
 import { Request, Response, NextFunction } from 'express';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 import { UsersService } from '~app/users/users.service';
 import { cookieOptions } from '~app/types/constants';
 import { UserSerializer } from '~app/serializers/user.serializer';

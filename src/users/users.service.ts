@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { TUserDocument, User } from '~app/schemas/user.schema';
 import { CreateUserDto } from '~app/users/dto/create-user.dto';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 import { TOAuthProvider } from '~app/helpers/o-auth-module/o-auth.types';
 
 @Injectable()

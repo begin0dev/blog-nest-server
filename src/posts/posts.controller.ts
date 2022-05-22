@@ -27,15 +27,15 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
-  @Patch(':id')
-  @UseGuards(AuthGuard(authTarget.ADMIN))
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(id, updatePostDto);
-  }
-
-  @Delete(':id')
-  @UseGuards(AuthGuard(authTarget.ADMIN))
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(id);
-  }
+  // @Patch(':id')
+  // @UseGuards(AuthGuard(authTarget.ADMIN))
+  // update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+  //   return this.postsService.update(id, updatePostDto);
+  // }
+  //
+  // @Delete(':id')
+  // @UseGuards(AuthGuard(authTarget.ADMIN))
+  // remove(@Param('id') id: string) {
+  //   return this.postsService.remove(id);
+  // }
 }

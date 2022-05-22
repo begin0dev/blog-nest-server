@@ -1,90 +1,89 @@
 import { Dayjs } from 'dayjs';
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsBoolean, IsDate, IsString, Length, ValidateNested } from 'class-validator';
-import { Optional } from '@nestjs/common';
+import { IsBoolean, IsDate, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class Local {
-  @IsString()
-  @Optional()
   @Prop({ sparse: true, unique: true, index: true })
+  @IsString()
+  @IsOptional()
   refreshToken?: string;
 
-  @IsDate()
-  @Optional()
   @Prop({ type: Date })
+  @IsDate()
+  @IsOptional()
   expiredAt?: Date | Dayjs;
 
-  @IsString()
-  @Optional()
   @Prop({ sparse: true, unique: true, index: true })
+  @IsString()
+  @IsOptional()
   verifyCode?: string;
 
-  @IsDate()
-  @Optional()
   @Prop({ type: Date })
+  @IsDate()
+  @IsOptional()
   verifyCodeSendAt?: Date | Dayjs;
 }
 
 class Social {
-  @IsString()
   @Prop({ sparse: true, unique: true, index: true })
+  @IsString()
   id: string;
 }
 
 class OAuth {
-  @ValidateNested()
-  @Type(() => Local)
-  @Optional()
   @Prop()
+  @Type(() => Local)
+  @ValidateNested()
+  @IsOptional()
   local?: Local;
 
-  @ValidateNested()
-  @Type(() => Social)
-  @Optional()
   @Prop()
+  @Type(() => Social)
+  @ValidateNested()
+  @IsOptional()
   facebook?: Social;
 
-  @ValidateNested()
-  @Type(() => Social)
-  @Optional()
   @Prop()
+  @Type(() => Social)
+  @ValidateNested()
+  @IsOptional()
   kakao?: Social;
 
-  @ValidateNested()
-  @Type(() => Social)
-  @Optional()
   @Prop()
+  @Type(() => Social)
+  @ValidateNested()
+  @IsOptional()
   google?: Social;
 
-  @ValidateNested()
-  @Type(() => Social)
-  @Optional()
   @Prop()
+  @Type(() => Social)
+  @ValidateNested()
+  @IsOptional()
   github?: Social;
 }
 
 @Schema({ timestamps: true })
 export class User {
+  @Prop({ required: true })
   @IsString()
   @Length(3, 20)
-  @Prop({ required: true })
   displayName: string;
 
-  @IsString()
-  @Optional()
   @Prop()
+  @IsString()
+  @IsOptional()
   profileImageUrl?: string;
 
-  @IsBoolean()
-  @Optional()
   @Prop({ default: false })
+  @IsBoolean()
+  @IsOptional()
   isAdmin: boolean;
 
-  @ValidateNested()
-  @Type(() => OAuth)
   @Prop()
+  @Type(() => OAuth)
+  @ValidateNested()
   oAuth: OAuth;
 }
 

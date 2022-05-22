@@ -1,5 +1,3 @@
-import '../../test/mongo-test.helper';
-
 import * as dayjs from 'dayjs';
 import * as faker from 'faker';
 import { Model } from 'mongoose';
@@ -10,7 +8,7 @@ import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { mockUser } from '~app/schemas/__mocks__/user';
 import { UsersService } from '~app/users/users.service';
 import { TUserDocument, User, UserSchema } from '~app/schemas/user.schema';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
 
 describe('UsersService', () => {

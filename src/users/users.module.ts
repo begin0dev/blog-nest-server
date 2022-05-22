@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { UsersController } from '~app/users/users.controller';
 import { UsersService } from '~app/users/users.service';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 import { User, UserSchema } from '~app/schemas/user.schema';
 
 @Module({

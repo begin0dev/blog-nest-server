@@ -8,7 +8,7 @@ import { UsersController } from '~app/users/users.controller';
 import { UsersService } from '~app/users/users.service';
 import { mockUser } from '~app/schemas/__mocks__/user';
 import { cookieOptions } from '~app/types/constants';
-import { TokensService } from '~app/middlewares/tokens/tokens.service';
+import { TokensService } from '~app/tokens/tokens.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;
