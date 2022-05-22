@@ -1,10 +1,10 @@
+import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { AuthGuard, authTarget } from '~app/guards/auth.guard';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('posts')
 @Controller('v1/posts')
@@ -27,15 +27,15 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
-  // @Patch(':id')
-  // @UseGuards(AuthGuard(authTarget.ADMIN))
-  // update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-  //   return this.postsService.update(id, updatePostDto);
-  // }
-  //
-  // @Delete(':id')
-  // @UseGuards(AuthGuard(authTarget.ADMIN))
-  // remove(@Param('id') id: string) {
-  //   return this.postsService.remove(id);
-  // }
+  @Patch(':id')
+  @UseGuards(AuthGuard(authTarget.ADMIN))
+  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+    return this.postsService.update(id, updatePostDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard(authTarget.ADMIN))
+  remove(@Param('id') id: string) {
+    return this.postsService.remove(id);
+  }
 }
