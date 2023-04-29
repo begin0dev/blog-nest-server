@@ -14,18 +14,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: 18
 
       - name: Install Package.json
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Run Test
-        run: npm test
+        run: yarn test
 
 #  ecs 배포 주석처리
 #  build_and_deploy:
