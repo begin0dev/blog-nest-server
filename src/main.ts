@@ -1,7 +1,7 @@
 import 'newrelic';
 import 'reflect-metadata';
 
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
@@ -16,7 +16,7 @@ import * as packageJSON from '../package.json';
 
 async function bootstrap() {
   const { CLIENT_URI, COOKIE_SECRET, NODE_ENV, PORT = 3001 } = process.env;
-  const isProduction = NODE_ENV === 'production';
+  const isProd = NODE_ENV === 'production';
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -31,12 +31,12 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.enableCors({
-    origin: isProduction ? [CLIENT_URI, 'localhost:3000'] : '*',
+    origin: isProd ? [CLIENT_URI, 'localhost:3000'] : '*',
     credentials: true,
   });
   app.use(helmet());
   app.use(cookieParser(COOKIE_SECRET));
-  app.use(morgan(isProduction ? 'tiny' : 'dev'));
+  app.use(morgan(isProd ? 'tiny' : 'dev'));
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
