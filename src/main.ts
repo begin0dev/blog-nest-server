@@ -1,4 +1,3 @@
-// import 'newrelic';
 import 'reflect-metadata';
 
 import helmet from 'helmet';
