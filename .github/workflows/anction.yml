@@ -22,7 +22,7 @@ jobs:
           node-version: 18
 
       - name: Install Package.json
-        run: yarn install --immutable --immutable-cache --check-cache
+        run: yarn install --frozen-lockfile
 
       - name: Run Test
         run: yarn test
