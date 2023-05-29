@@ -1,4 +1,4 @@
-import * as newrelic from 'newrelic';
+// import * as newrelic from 'newrelic';
 import { Response } from 'express';
 import { Catch, HttpException, ExceptionFilter, ArgumentsHost, HttpStatus } from '@nestjs/common';
 
@@ -11,7 +11,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const status = exception.getStatus?.() ?? HttpStatus.INTERNAL_SERVER_ERROR;
 
-    if (status === 500 && exception.stack) newrelic.noticeError(exception);
+    // if (status === 500 && exception.stack) newrelic.noticeError(exception);
 
     res.status(status).json({ status: JsendStatus.ERROR, message: exception.message });
   }
