@@ -9781,6 +9781,11 @@ serverless-plugin-typescript@^2.1.1:
     globby "^10.0.2"
     lodash "^4.17.21"
 
+serverless-plugin-warmup@^8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-8.2.1.tgz#b776a886d4390a9e7c907f0db1c4639fed913350"
+  integrity sha512-bVPqK2tt3m6AVjVnjuiU/nsGtm+hukaQmVn7zx2KbKSTCwOZEkMcsqKhkKw3Y4cm/vA2Wxd+3d1lftaGKFkG/Q==
+
 serverless-prune-plugin@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/serverless-prune-plugin/-/serverless-prune-plugin-2.0.2.tgz#803fb5450a17775ab7cb7912da94d9b64ae81b78"
