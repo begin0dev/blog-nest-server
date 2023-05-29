@@ -1,0 +1,21 @@
+service: blog-nest-server
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  - serverless-prune-plugin
+  - serverless-offline
+
+provider:
+  name: aws
+  region: ap-northeast-2
+  runtime: nodejs16.x
+  stage: dev
+
+functions:
+  main:
+    handler: src/main.runLambda
+    events:
+      - http:
+          method: any
+          path: /{any+}
