@@ -1,8 +1,8 @@
 import * as dayjs from 'dayjs';
-import * as faker from 'faker';
 import * as jwt from 'jsonwebtoken';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
+import { faker } from '@faker-js/faker';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -21,7 +21,7 @@ describe('Token middleware test', () => {
   let app: INestApplication;
   let userModel: Model<TUserDocument>;
 
-  const JWT_SECRET = faker.datatype.uuid();
+  const JWT_SECRET = faker.string.uuid();
 
   const extractCookies = (cookies: string[]): Record<string, string> =>
     cookies.reduce((acc, cur) => {

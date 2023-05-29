@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { createResponse } from 'node-mocks-http';
 import { ConfigService } from '@nestjs/config';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -20,7 +20,7 @@ describe('UsersController', () => {
   const getCurrentUser = () => {
     const { displayName, profileImageUrl, isAdmin } = mockUser();
     return {
-      _id: faker.datatype.uuid(),
+      _id: faker.string.uuid(),
       displayName,
       profileImageUrl,
       isAdmin,

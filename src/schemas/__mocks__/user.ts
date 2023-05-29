@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import * as dayjs from 'dayjs';
 
 import { oAuthProviders } from '~app/helpers/o-auth-module/o-auth.types';
@@ -9,13 +9,13 @@ export const mockUser = () => ({
   isAdmin: false,
   oAuth: {
     local: {
-      refreshToken: faker.datatype.uuid(),
+      refreshToken: faker.string.uuid(),
       expiredAt: dayjs().add(1, 'day'),
-      verifyCode: faker.datatype.uuid(),
+      verifyCode: faker.string.uuid(),
       verifyCodeSendAt: dayjs(),
     },
     [oAuthProviders.FACEBOOK]: {
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
     },
   },
 });

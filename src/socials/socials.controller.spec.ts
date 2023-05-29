@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -16,7 +16,7 @@ describe('SocialsController', () => {
   const clientUri = faker.internet.url();
   const userAttr = mockUser();
   const profile = {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     name: userAttr.displayName,
     picture: { data: { url: userAttr.profileImageUrl } },
   };
@@ -69,7 +69,7 @@ describe('SocialsController', () => {
 
   it('#facebookCallback - findBySocialId', async () => {
     const userBase = {
-      _id: faker.datatype.uuid(),
+      _id: faker.string.uuid(),
       ...userAttr,
     };
 
@@ -83,7 +83,7 @@ describe('SocialsController', () => {
 
   it('#facebookCallback', async () => {
     const userBase = {
-      _id: faker.datatype.uuid(),
+      _id: faker.string.uuid(),
       ...userAttr,
     };
 

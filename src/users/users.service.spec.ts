@@ -1,6 +1,6 @@
 import * as dayjs from 'dayjs';
-import * as faker from 'faker';
 import { Model } from 'mongoose';
+import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
@@ -16,7 +16,7 @@ describe('UsersService', () => {
   let usersService: UsersService;
   let userModel: Model<TUserDocument>;
 
-  const JWT_SECRET = faker.datatype.uuid();
+  const JWT_SECRET = faker.string.uuid();
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
@@ -118,7 +118,7 @@ describe('UsersService', () => {
   });
 
   it('#updateRefreshToken', async () => {
-    const refreshToken = faker.datatype.uuid();
+    const refreshToken = faker.string.uuid();
     let user = await userModel.create(mockUser());
     expect(user.oAuth.local.refreshToken).not.toEqual(refreshToken);
 
