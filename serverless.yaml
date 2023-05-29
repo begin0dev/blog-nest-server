@@ -9,7 +9,7 @@ plugins:
 provider:
   name: aws
   region: ap-northeast-2
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   stage: dev
 
 functions:
