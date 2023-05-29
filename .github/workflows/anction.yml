@@ -22,7 +22,7 @@ jobs:
           node-version: 18
 
       - name: Install Package.json
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run Test
         run: yarn test
