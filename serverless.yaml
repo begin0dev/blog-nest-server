@@ -2,7 +2,6 @@ service: blog-nest-server
 
 plugins:
   - serverless-plugin-typescript
-  - serverless-plugin-warmup
   - serverless-plugin-optimize
   - serverless-prune-plugin
   - serverless-offline
