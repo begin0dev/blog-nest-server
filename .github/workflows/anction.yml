@@ -24,8 +24,8 @@ jobs:
       - name: Install Package.json
         run: yarn install
 
-#      - name: Run Test
-#        run: yarn test
+      - name: Run Test
+        run: yarn test
 
       - name: serverless deploy
         uses: serverless/github-action@v3
