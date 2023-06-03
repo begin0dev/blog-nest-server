@@ -33,7 +33,6 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-.env
+/.serverless/*
 
-# heroku
-/begin0dev-blog
+.env
